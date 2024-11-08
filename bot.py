@@ -5,7 +5,6 @@ import json
 Chave_api = "7352283955:AAE2KNW-GlifnPKwy82F0iytRP2uDFPlJSA"
 bot = telebot.TeleBot(Chave_api)
 
-# start help info
 bot.delete_my_commands()
 
 def add_command(commandName, commandDescription):
@@ -13,6 +12,13 @@ def add_command(commandName, commandDescription):
     newCommand = types.BotCommand(commandName, commandDescription)
     currentCommands.append(newCommand)
     bot.set_my_commands(currentCommands)
+
+# @bot.message_handler(func = lambda msg: msg.text == 'me add')
+
+add_command('start', 'inicia o bot')
+@bot.message_handler(commands=['start'])
+def startCommand(msg):
+   bot.reply_to(msg, " Olá! 👋 Bem-vindo ao [nome do seu bot]! \n \n  Estou aqui para ajudar você com [objetivo principal do bot]. Aqui estão algumas coisas que você pode fazer comigo: \n \n 📄 /help - Veja uma lista completa dos meus comandos \n ℹ️ /info - Saiba mais sobre o que eu posso fazer \n 🆘 /support - Fale com o suporte para mais ajuda \n \n Se precisar de algo específico, é só digitar o comando ou enviar uma mensagem. Vamos começar! 🚀")
 
 add_command('myinfo','exibe as informações do usuario')
 @bot.message_handler(commands=['myinfo'])
@@ -32,12 +38,9 @@ def verify(msg):
 @bot.message_handler(func=verify)
 def StandartMensage(msg):
    commands = bot.get_my_commands()
-   bot.reply_to(msg, "Recebi sua mensagem.")
-   bot.send_message(msg.chat.id, 'não entendi oque voce quer, aqui estao alguns comandos que podem vir a ser uteis.' )
-   for command in commands:
-    bot.send_message(msg.chat.id, '/{} , {}'.format(command.command, command.description))
-   print(msg.from_user.id)
-   print(msg.from_user.first_name)
+   bot.send_message(msg.chat.id, 'Não entendi oque você quis dizer, aqui estão alguns comandos que podem te ajudar \n \n 📄 /help - Veja uma lista completa dos meus comandos \n 🚀 /start - comece pelo inicio :)' )
+   print('id de usuario >>>', msg.from_user.id)
+   print('nome de usuario >>>>', msg.from_user.first_name)
 
 
 bot.infinity_polling()
