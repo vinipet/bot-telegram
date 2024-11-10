@@ -29,6 +29,19 @@ def helpcommand(msg):
       bot.send_message(msg.chat.id, '/{} -   {} '.format(command.command ,command.description))
    bot.send_message(msg.chat.id, 'Para executar qualquer um, basta digitar o nome do comando ou clicar nele. Qualquer dúvida, estou aqui para ajudar! 😃') 
 
+add_command('info',' ℹ️  exibe algumas informações sobre mim')
+@bot.message_handler(commands=['info'])
+def infosCommand(msg):
+   bot.reply_to(msg, 'ℹ️ Sobre o Adm (ele é top):')
+   bot.send_message(msg.chat.id, 'Eu sou um bot criado para [escolhe ai ]. Fui desenvolvido para oferecer a você uma experiência simples, rápida e eficiente.')
+   bot.send_message(msg.chat.id, 'Principais funções: \n \n # [Função 1] - [Breve descrição da função] \n # [Função 2] - [Breve descrição da função] \n # [Função 3] - [Breve descrição da função] \n \n # Estou sempre por aqui! Se precisar de algo específico, use /help para ver todos os comandos. Vamos trabalhar juntos! 🤝')
+
+add_command('support', '🆘 mostra os contatos para melhor suporte')
+@bot.message_handler(commands=['support'])
+def supportCommand(msg):
+   bot.reply_to(msg, 'Estamos aqui para ajudar você com qualquer dúvida ou problema! Para entrar em contato:')
+   bot.send_message(msg.chat.id, 'Email: suporte100%real@todosEles.com \n FAQ: Consulte nossas Perguntas Frequentes em (link para o site que vai ter) \n Chat: (Link para um canal de suporte, se houver, ou pro seu chat) \n Fique à vontade para nos contatar, e faremos o possível para ajudar! 😄')
+
 add_command('myinfo',' 📄 exibe as informações do usuario')
 @bot.message_handler(commands=['myinfo'])
 def infosCommand(msg):
