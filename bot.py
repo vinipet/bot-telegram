@@ -1,9 +1,13 @@
 import telebot 
 from telebot import TeleBot, types
 import json
+from dotenv import load_dotenv
+import os
 
-Chave_api = "7352283955:AAE2KNW-GlifnPKwy82F0iytRP2uDFPlJSA"
-bot = telebot.TeleBot(Chave_api)
+load_dotenv()
+API_key = os.getenv('API_KEY')
+bot = telebot.TeleBot(API_key)
+
 
 bot.delete_my_commands()
 
@@ -14,7 +18,6 @@ def add_command(commandName, commandDescription):
     currentCommands.append(newCommand)
     bot.set_my_commands(currentCommands)
 
-# @bot.message_handler(func = lambda msg: msg.text == 'me add')
 
 add_command('start', ' 🚀 inicia o bot')
 @bot.message_handler(commands=['start'])
@@ -33,8 +36,8 @@ add_command('info',' ℹ️  exibe algumas informações sobre mim')
 @bot.message_handler(commands=['info'])
 def infosCommand(msg):
    bot.reply_to(msg, 'ℹ️ Sobre o Adm (ele é top):')
-   bot.send_message(msg.chat.id, 'Eu sou um bot criado para [escolhe ai ]. Fui desenvolvido para oferecer a você uma experiência simples, rápida e eficiente.')
-   bot.send_message(msg.chat.id, 'Principais funções: \n \n # [Função 1] - [Breve descrição da função] \n # [Função 2] - [Breve descrição da função] \n # [Função 3] - [Breve descrição da função] \n \n # Estou sempre por aqui! Se precisar de algo específico, use /help para ver todos os comandos. Vamos trabalhar juntos! 🤝')
+   bot.send_message(msg.chat.id, 'Eu sou um bot criado para te ajudar a entrar no canal privado da Prototips. Fui desenvolvido para oferecer a você uma experiência simples, rápida e eficiente.')
+   bot.send_message(msg.chat.id, 'Principais funções: \n \n # ADM - Eu administro o canal \n # Pagamentos - posso te ajudar a pagar (tem descontos as vezes) \n # [3 funções fica mais bonito falta 1] - [descrição da função] \n \n # Estou sempre por aqui! Se precisar de algo específico, use /help para ver todos os comandos. Vamos trabalhar juntos! 🤝')
 
 add_command('support', '🆘 mostra os contatos para melhor suporte')
 @bot.message_handler(commands=['support'])
