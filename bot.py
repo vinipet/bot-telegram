@@ -18,6 +18,12 @@ def add_command(commandName, commandDescription):
     currentCommands.append(newCommand)
     bot.set_my_commands(currentCommands)
 
+def nullifyBtn(btns):
+   newBtns = types.InlineKeyboardMarkup()
+   for row in btns:
+      newRow = [types.InlineKeyboardButton(btn.text, callback_data='None') for btn in row]
+      newBtns.row(*newRow)
+   return newBtns
 
 add_command('start', ' 🚀 iniciar o bot')
 @bot.message_handler(commands=['start'])
