@@ -123,6 +123,22 @@ def callback_pix_query(call):
       userData[chat_id] = classes.Usertemp(chat_id, infos) 
       bot.send_message(chat_id, 'Vejo que você ainda não possui um cadastro conosco. Vou precisar de algumas informações suas pra finalizar a compra')
       bot.send_message(chat_id, 'Vamos começar com {}, por favor digite as informações pra eu terminar o seu cadastro'.format(userData[chat_id].steps[0]) )
+      
+@bot.message_handler(func=lambda msg: 'email' is userData[msg.chat.id].steps[0])
+def captureEmail(msg):
+   chat_id = msg.chat.id
+   email = msg.text
+
+   if "@" in email and "." in email:
+      print('capturando e-mail')
+      userData[chat_id].email = email
+      bot.send_message(chat_id, f"E-mail registrado com sucesso: {email}")
+      print(f"Salvando no banco de dados: {chat_id} - {email}")
+      userData[chat_id].steps.remove('email')
+      bot.send_message(chat_id, 'ainda falta {} pra finalizar o cadastro, por favor digite o {}'.format(userData[chat_id].steps[0],userData[chat_id].steps[0],))
+   else:
+      bot.send_message(chat_id, "E-mail inválido. Por favor, tente novamente.")
+
 # add_command('start', ' 🚀 iniciar o bot')
 @bot.message_handler(commands=['start'])
 def startCommand(msg):
