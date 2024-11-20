@@ -102,6 +102,27 @@ def callback_startPayment_query(call):
    bot.send_message(chat_id, 'Como você deseja pagar?', reply_markup=keyboard)
    bot.answer_callback_query(call.id)
 
+@bot.callback_query_handler(func=lambda call: call.data =="pix")
+def callback_pix_query(call):
+   chat_id = call.message.chat.id
+   message_id = call.message.message_id
+   message = call.message
+   
+   keyboard = types.InlineKeyboardMarkup()
+   keyboard.add(types.InlineKeyboardButton("🔥 Pix 🔥", callback_data="none"))
+   bot.edit_message_text(message.text, chat_id, message_id, reply_markup=keyboard)
+
+   bot.send_message(chat_id, 'estamos verificando algumas informações')   
+   isInBank = searchDataBank(chat_id)
+   infos = ['email', 'firstName', 'lastName', 'indentification,']
+
+   if isInBank:
+      True
+   else:
+      infos.append('pix')
+      userData[chat_id] = classes.Usertemp(chat_id, infos) 
+      bot.send_message(chat_id, 'Vejo que você ainda não possui um cadastro conosco. Vou precisar de algumas informações suas pra finalizar a compra')
+      bot.send_message(chat_id, 'Vamos começar com {}, por favor digite as informações pra eu terminar o seu cadastro'.format(userData[chat_id].steps[0]) )
 # add_command('start', ' 🚀 iniciar o bot')
 @bot.message_handler(commands=['start'])
 def startCommand(msg):
