@@ -4,6 +4,7 @@ import json
 from dotenv import load_dotenv
 import os
 import classes
+from typing import Optional
 
 load_dotenv()
 API_key = os.getenv('API_KEY')
@@ -24,7 +25,7 @@ def searchDataBank(userId):
     else:
         return False
 
-def SearchUserInfoWhoIsNone(user, SearchingInfo):
+def SearchUserInfoWhoIsNone(user, SearchingInfo: Optional[list] = ['email', 'firstName', 'lastName', 'identification']):
    datas = []
    for info in SearchingInfo:
       if isinstance(user, dict):
