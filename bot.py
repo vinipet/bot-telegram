@@ -3,14 +3,37 @@ from telebot import TeleBot, types
 import json
 from dotenv import load_dotenv
 import os
+import classes
 
 load_dotenv()
 API_key = os.getenv('API_KEY')
 bot = telebot.TeleBot(API_key)
 
 
+bancoDdados = {}
+userData = {}
 # bot.delete_my_commands()
 
+def searchDataBank(userId):
+    if userId in bancoDdados:
+         user_object = bancoDdados[userId]  
+         return user_object
+    elif userId in userData:
+        user_object = userData[userId]  
+        return user_object
+    else:
+        return False
+
+def SearchUserInfoWhoIsNone(user, SearchingInfo):
+   datas = []
+   for info in SearchingInfo:
+      if isinstance(user, dict):
+         value = user.get(info, None)  
+      else:
+         value = getattr(user, info, None) 
+      if value is None:
+         datas.append(info)
+   return datas
 
 def add_command(commandName, commandDescription):
     currentCommands = bot.get_my_commands()
@@ -59,7 +82,6 @@ def callback_sim_query(call):
    keyboard.add(btn1,btn2)
    bot.send_message(chat_id, 'Pra entrar no nosso canal, primeiro deve ser pago uma pequena taxa, você esta bem com isso também?', reply_markup=keyboard)
    bot.answer_callback_query(call.id)
-
 
 @bot.callback_query_handler(func=lambda call: call.data == "startPayment")
 def callback_startPayment_query(call):
