@@ -46,16 +46,29 @@ def searchDataBank(userId):
     else:
         return False
 
-def SearchUserInfoWhoIsNone(user, SearchingInfo: Optional[list] = ['email', 'firstName', 'lastName', 'identification']):
-   datas = []
-   for info in SearchingInfo:
-      if isinstance(user, dict):
-         value = user.get(info, None)  
-      else:
-         value = getattr(user, info, None) 
-      if value is None:
-         datas.append(info)
-   return datas
+def SearchUserInfoWhoIsNone(user = object, SearchingInfo: Optional[list] = None):
+    """
+    Busca informações que estão como 'None' em um usuário.
+
+    Args:
+        user: O objeto ou dicionário do usuário.
+        SearchingInfo: Uma lista opcional de informações a serem verificadas.
+                      Se não for fornecida, será usada a lista padrão.
+
+    Returns:
+        list: Uma lista contendo os nomes das informações que estão como 'None'.
+    """
+    if SearchingInfo is None:
+      SearchingInfo = ['email', 'firstName', 'lastName', 'identification']
+      datas = []
+      for info in SearchingInfo:
+         if isinstance(user, dict):
+            value = user.get(info, None)  
+         else:  
+            value = getattr(user, info, None) 
+         if value is None:
+            datas.append(info)
+      return datas
 
 def add_command(commandName, commandDescription):
     currentCommands = bot.get_my_commands()
