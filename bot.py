@@ -83,7 +83,16 @@ def nullifyBtn(btns):
       newBtns.row(*newRow)
    return newBtns
 
-
+def tryRegisterUser(userId):
+   if len(userData[userId].steps) == 0 :
+      del userData[userId].steps
+      bancoDdados[userId] = userData[userId]
+      del userData[userId]
+      print('banco de dados ofc >>>>', bancoDdados)
+      print('banco de dados fal >>>>', userData)
+      return True 
+   else:
+      return False   
 
 # add_command('join', '🎁 iniciar o processo para entrar no canal privado')
 @bot.message_handler(commands=['join'])
