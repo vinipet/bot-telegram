@@ -157,17 +157,27 @@ def callback_pix_query(call):
 
    bot.send_message(chat_id, 'estamos verificando algumas informações')   
    isInBank = searchDataBank(chat_id)
-   infos = ['email', 'firstName', 'lastName', 'indentification,']
+   infos = ['email', 'firstName', 'lastName', 'identification']
+   print(SearchUserInfoWhoIsNone(chat_id, infos))
+   if isInBank and not SearchUserInfoWhoIsNone(isInBank, infos):
+      result = fetch.fetch(isInBank)
+      print(result)
+      if result['status'] == 'denied':
+         bot.send_message(chat_id,'Algo deu errado')
+         bot.send_message(chat_id, result['msg'])
+      if result['status'] == 'aproved':
+         bot.send_message(chat_id, 'Vejo que você já tem cadastro conosco.')
+         qr = makeQRimage(result['QRCode'])
+         bot.send_photo(chat_id, qr )
+         bot.send_message(chat_id, result['link'])
 
-   if isInBank:
-      True
+
    else:
-      infos.append('pix')
       userData[chat_id] = classes.Usertemp(chat_id, infos) 
-      bot.send_message(chat_id, 'Vejo que você ainda não possui um cadastro conosco. Vou precisar de algumas informações suas pra finalizar a compra')
+      bot.send_message(chat_id, 'Vejo que você ainda não possui um cadastro conosco. Vamos primeiro fazer o seu cadastro depos você volta aqui pra realizar o seu pagamento')
       bot.send_message(chat_id, 'Vamos começar com {}, por favor digite as informações pra eu terminar o seu cadastro'.format(userData[chat_id].steps[0]) )
       
-@bot.message_handler(func=lambda msg: 'email' is userData[msg.chat.id].steps[0])
+@bot.message_handler(func=lambda msg:  msg.chat.id in userData and userData[msg.chat.id].steps[0] == 'email')
 def captureEmail(msg):
    chat_id = msg.chat.id
    email = msg.text
