@@ -192,6 +192,45 @@ def captureEmail(msg):
    else:
       bot.send_message(chat_id, "E-mail inválido. Por favor, tente novamente.")
 
+@bot.message_handler(func=lambda msg:msg.chat.id in userData and userData[msg.chat.id].steps[0] == 'firstName')
+def captureFirstName(msg):
+   chat_id = msg.chat.id
+   name = msg.text
+
+   print('capturando primeiro nome')
+   userData[chat_id].firstName = name
+   bot.send_message(chat_id, f"Nome registrado com sucesso: {name}")
+   userData[chat_id].steps.remove('firstName')
+   bot.send_message(chat_id, 'ainda falta {} pra finalizar o cadastro, por favor digite o {}'.format(userData[chat_id].steps[0],userData[chat_id].steps[0],))
+   print(f"Salvando no banco de dados: {chat_id} - {name}")
+
+@bot.message_handler(func=lambda msg:  msg.chat.id in userData and userData[msg.chat.id].steps[0] == 'lastName')
+def captureFirstName(msg):
+   chat_id = msg.chat.id
+   lastName = msg.text
+
+   print('capturando sobre nome')
+   userData[chat_id].lastName = lastName
+   bot.send_message(chat_id, f"Nome registrado com sucesso: {lastName}")
+   userData[chat_id].steps.remove('lastName')
+   bot.send_message(chat_id, 'ainda falta {} pra finalizar o cadastro, por favor digite o {}'.format(userData[chat_id].steps[0],userData[chat_id].steps[0],))
+   print(f"Salvando no banco de dados: {chat_id} - {lastName}")
+
+@bot.message_handler(func=lambda msg: msg.chat.id in userData and userData[msg.chat.id].steps[0] == 'identification')
+def capturedocumentType(msg):
+   chat_id = msg.chat.id
+   cpf = msg.text
+
+   print('capturando CPF')
+   userData[chat_id].identification = cpf
+   print(f"Salvando no banco de dados: {chat_id} - {cpf}")
+   bot.send_message(chat_id, f"CPF registrado com sucesso: {cpf}")
+   userData[chat_id].steps.remove('identification')
+   if not tryRegisterUser(chat_id):
+      bot.send_message(chat_id, 'ainda falta {} pra finalizar o cadastro, por favor digite o {}'.format(userData[chat_id].steps[0],userData[chat_id].steps[0],))
+   else: 
+      bot.send_message(chat_id,'cadastro concluido, vamos voltar ao pagamento? /join')
+
 # add_command('start', ' 🚀 iniciar o bot')
 @bot.message_handler(commands=['start'])
 def startCommand(msg):
