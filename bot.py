@@ -14,7 +14,6 @@ load_dotenv()
 API_key = os.getenv('API_KEY')
 bot = telebot.TeleBot(API_key)
 
-
 bancoDdados = {}
 userData = {}
 # bot.delete_my_commands()
@@ -35,30 +34,35 @@ def makeQRimage(code):
    qr_bytes = buffer.getvalue()
    
    return qr_bytes
+   # # Salvando a imagem em um arquivo
+   # qr_image.save("qr_code.png")
+
+   # # Exibindo a imagem (opcional, para visualização)
+   # qr_image.show()
 
 def searchDataBank(userId):
-    if userId in bancoDdados:
+   if userId in bancoDdados:
          user_object = bancoDdados[userId]  
          return user_object
-    elif userId in userData:
-        user_object = userData[userId]  
-        return user_object
-    else:
-        return False
+   elif userId in userData:
+      user_object = userData[userId]  
+      return user_object
+   else:
+      return False
 
 def SearchUserInfoWhoIsNone(user = object, SearchingInfo: Optional[list] = None):
-    """
-    Busca informações que estão como 'None' em um usuário.
+   """
+   Busca informações que estão como 'None' em um usuário.
 
-    Args:
-        user: O objeto ou dicionário do usuário.
-        SearchingInfo: Uma lista opcional de informações a serem verificadas.
-                      Se não for fornecida, será usada a lista padrão.
+   Args:
+      user: O objeto ou dicionário do usuário.
+      SearchingInfo: Uma lista opcional de informações a serem verificadas.
+                     Se não for fornecida, será usada a lista padrão.
 
-    Returns:
-        list: Uma lista contendo os nomes das informações que estão como 'None'.
-    """
-    if SearchingInfo is None:
+   Returns:
+      list: Uma lista contendo os nomes das informações que estão como 'None'.
+   """
+   if SearchingInfo is None:
       SearchingInfo = ['email', 'firstName', 'lastName', 'identification']
       datas = []
       for info in SearchingInfo:
@@ -71,10 +75,10 @@ def SearchUserInfoWhoIsNone(user = object, SearchingInfo: Optional[list] = None)
       return datas
 
 def add_command(commandName, commandDescription):
-    currentCommands = bot.get_my_commands()
-    newCommand = types.BotCommand(commandName, commandDescription)
-    currentCommands.append(newCommand)
-    bot.set_my_commands(currentCommands)
+   currentCommands = bot.get_my_commands()
+   newCommand = types.BotCommand(commandName, commandDescription)
+   currentCommands.append(newCommand)
+   bot.set_my_commands(currentCommands)
 
 def nullifyBtn(btns):
    newBtns = types.InlineKeyboardMarkup()
@@ -107,13 +111,13 @@ def joinCommand(msg):
 
 @bot.callback_query_handler(func=lambda call: call.data == "no")
 def callback_no_query(call):
-    chat_id = call.message.chat.id
-    message_id = call.message.message_id
-    message = call.message
-    bot.edit_message_text(message.text, chat_id, message_id, reply_markup=nullifyBtn(message.reply_markup.keyboard))
-    bot.send_message(chat_id, 'Que pena que você não quer continuar conosco :( \n se mudar de ideia estou aqui por você   ')
-    bot.answer_callback_query(call.id)
-    
+   chat_id = call.message.chat.id
+   message_id = call.message.message_id
+   message = call.message
+   bot.edit_message_text(message.text, chat_id, message_id, reply_markup=nullifyBtn(message.reply_markup.keyboard))
+   bot.send_message(chat_id, 'Que pena que você não quer continuar conosco :( \n se mudar de ideia estou aqui por você   ')
+   bot.answer_callback_query(call.id)
+   
 @bot.callback_query_handler(func=lambda call: call.data == "sim")
 def callback_sim_query(call):
    chat_id = call.message.chat.id
@@ -234,7 +238,7 @@ def capturedocumentType(msg):
 # add_command('start', ' 🚀 iniciar o bot')
 @bot.message_handler(commands=['start'])
 def startCommand(msg):
-   bot.reply_to(msg, " Olá! 👋 Bem-vindo! \n \n  Estou aqui para ajudar você a entrar no canal privado [sla que nome c vai dar pedro]. Aqui estão algumas coisas que você pode fazer comigo: \n \n 📄 /help - Veja uma lista completa dos meus comandos \n ℹ️ /info - Saiba mais sobre o que eu posso fazer \n 🆘 /support - Fale com o suporte para mais ajuda \n \n Se precisar de algo específico, é só digitar o comando ou enviar uma mensagem. Vamos começar! 🚀")
+   bot.reply_to(msg, 'Olá! 👋 Bem-vindo! \n \n  Estou aqui para ajudar você a entrar no canal privado [sla que nome c vai dar pedro]. Aqui estão algumas coisas que você pode fazer comigo: \n \n 📄 /help - Veja uma lista completa dos meus comandos \n ℹ️ /info - Saiba mais sobre o que eu posso fazer \n 🆘 /support - Fale com o suporte para mais ajuda \n \n Se precisar de algo específico, é só digitar o comando ou enviar uma mensagem. Vamos começar! 🚀')
 
 # add_command('help', ' 🔍 Exibir lista completa de Comandos')
 @bot.message_handler(commands=['help'])
@@ -280,4 +284,10 @@ def StandartMensage(msg):
    print('nome de usuario >>>>', msg.from_user.first_name)
 
 print('LIGADO!!!!!!')
-bot.infinity_polling()
+
+def start_bot():
+   bot.infinity_polling()
+
+if __name__ == "__main__":
+    start_bot()
+
