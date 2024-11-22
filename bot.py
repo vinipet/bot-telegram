@@ -5,6 +5,10 @@ from dotenv import load_dotenv
 import os
 import classes
 from typing import Optional
+import fetch
+import qrcode
+from PIL import Image
+import io
 
 load_dotenv()
 API_key = os.getenv('API_KEY')
@@ -14,6 +18,23 @@ bot = telebot.TeleBot(API_key)
 bancoDdados = {}
 userData = {}
 # bot.delete_my_commands()
+
+def makeQRimage(code):
+   qr = qrcode.QRCode(
+   version=2,  # Tamanho do QR Code (1 = menor, 40 = maior)
+   error_correction=qrcode.constants.ERROR_CORRECT_L,  # Tolerância a erros
+   box_size=10,  # Tamanho de cada "quadradinho"
+   border=4,  # Tamanho da borda
+   )
+   qr.add_data(code)
+   qr.make(fit=True)
+
+   qr_image = qr.make_image(fill_color="black", back_color="white")
+   buffer = io.BytesIO()
+   qr_image.save(buffer, format="PNG")
+   qr_bytes = buffer.getvalue()
+   
+   return qr_bytes
 
 def searchDataBank(userId):
     if userId in bancoDdados:
