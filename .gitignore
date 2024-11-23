@@ -1,4 +1,4 @@
 *.env
 .idea/
 .venv/
-.__pychace__
+.__pychace__/
