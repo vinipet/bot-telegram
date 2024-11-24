@@ -16,7 +16,7 @@ bot = telebot.TeleBot(API_key)
 
 bancoDdados = {}
 userData = {}
-# bot.delete_my_commands()
+bot.delete_my_commands()
 
 def makeQRimage(code):
    qr = qrcode.QRCode(
@@ -34,16 +34,16 @@ def makeQRimage(code):
    qr_bytes = buffer.getvalue()
    
    return qr_bytes
-   # # Salvando a imagem em um arquivo
+   #  Salvando a imagem em um arquivo
    # qr_image.save("qr_code.png")
 
-   # # Exibindo a imagem (opcional, para visualização)
+   # Exibindo a imagem (opcional, para visualização)
    # qr_image.show()
 
 def searchDataBank(userId):
    if userId in bancoDdados:
-         user_object = bancoDdados[userId]  
-         return user_object
+      user_object = bancoDdados[userId]  
+      return user_object
    elif userId in userData:
       user_object = userData[userId]  
       return user_object
@@ -64,15 +64,15 @@ def SearchUserInfoWhoIsNone(user = object, SearchingInfo: Optional[list] = None)
    """
    if SearchingInfo is None:
       SearchingInfo = ['email', 'firstName', 'lastName', 'identification']
-      datas = []
-      for info in SearchingInfo:
-         if isinstance(user, dict):
-            value = user.get(info, None)  
-         else:  
-            value = getattr(user, info, None) 
-         if value is None:
-            datas.append(info)
-      return datas
+   datas = []
+   for info in SearchingInfo:
+      if isinstance(user, dict):
+         value = user.get(info, None)  
+      else:  
+         value = getattr(user, info, None) 
+      if value is None:
+         datas.append(info)
+   return datas
 
 def add_command(commandName, commandDescription):
    currentCommands = bot.get_my_commands()
@@ -98,7 +98,7 @@ def tryRegisterUser(userId):
    else:
       return False   
 
-# add_command('join', '🎁 iniciar o processo para entrar no canal privado')
+add_command('join', '🎁 iniciar o processo para entrar no canal privado')
 @bot.message_handler(commands=['join'])
 def joinCommand(msg):
    keyboard = types.InlineKeyboardMarkup()
@@ -235,12 +235,12 @@ def capturedocumentType(msg):
    else: 
       bot.send_message(chat_id,'cadastro concluido, vamos voltar ao pagamento? /join')
 
-# add_command('start', ' 🚀 iniciar o bot')
+add_command('start', ' 🚀 iniciar o bot')
 @bot.message_handler(commands=['start'])
 def startCommand(msg):
    bot.reply_to(msg, 'Olá! 👋 Bem-vindo! \n \n  Estou aqui para ajudar você a entrar no canal privado [sla que nome c vai dar pedro]. Aqui estão algumas coisas que você pode fazer comigo: \n \n 📄 /help - Veja uma lista completa dos meus comandos \n ℹ️ /info - Saiba mais sobre o que eu posso fazer \n 🆘 /support - Fale com o suporte para mais ajuda \n \n Se precisar de algo específico, é só digitar o comando ou enviar uma mensagem. Vamos começar! 🚀')
 
-# add_command('help', ' 🔍 Exibir lista completa de Comandos')
+add_command('help', ' 🔍 Exibir lista completa de Comandos')
 @bot.message_handler(commands=['help'])
 def helpcommand(msg):
    bot.reply_to(msg, 'Aqui está tudo o que você pode fazer comigo!')
@@ -248,25 +248,25 @@ def helpcommand(msg):
       bot.send_message(msg.chat.id, '/{} -   {} '.format(command.command ,command.description))
    bot.send_message(msg.chat.id, 'Para executar qualquer um, basta digitar o nome do comando ou clicar nele. Qualquer dúvida, estou aqui para ajudar! 😃') 
 
-# add_command('info',' ℹ️  exibir algumas informações sobre mim')
+add_command('info',' ℹ️  exibir algumas informações sobre mim')
 @bot.message_handler(commands=['info'])
 def infosCommand(msg):
    bot.reply_to(msg, 'ℹ️ Sobre o Adm (ele é top):')
    bot.send_message(msg.chat.id, 'Eu sou um bot criado para te ajudar a entrar no canal privado da Prototips. Fui desenvolvido para oferecer a você uma experiência simples, rápida e eficiente.')
    bot.send_message(msg.chat.id, 'Principais funções: \n \n # ADM - Eu administro o canal \n # Pagamentos - posso te ajudar a pagar (tem descontos as vezes) \n # [3 funções fica mais bonito falta 1] - [descrição da função] \n \n # Estou sempre por aqui! Se precisar de algo específico, use /help para ver todos os comandos. Vamos trabalhar juntos! 🤝')
 
-# add_command('support', '🆘 mostrar os contatos para melhor suporte')
+add_command('support', '🆘 mostrar os contatos para melhor suporte')
 @bot.message_handler(commands=['support'])
 def supportCommand(msg):
    bot.reply_to(msg, 'Estamos aqui para ajudar você com qualquer dúvida ou problema! Para entrar em contato:')
    bot.send_message(msg.chat.id, 'Email: suporte100%real@todosEles.com \n FAQ: Consulte nossas Perguntas Frequentes em (link para o site que vai ter) \n Chat: (Link para um canal de suporte, se houver, ou pro seu chat) \n Fique à vontade para nos contatar, e faremos o possível para ajudar! 😄')
 
-# add_command('myinfo',' 📄 exibir as informações do usuario')
+add_command('myinfo',' 📄 exibir as informações do usuario')
 @bot.message_handler(commands=['myinfo'])
 def infosCommand(msg):
    bot.reply_to(msg, "claro, aqui estão algumas info suas \n seu id {} \n seu primeiro nome {} \n".format(msg.json['from']['id'], msg.json['from']['first_name']))
 
-# add_command('logs', '\U0001FAB5 exibir alguns logs da programação')
+add_command('logs', '\U0001FAB5 exibir alguns logs da programação')
 @bot.message_handler(commands=['logs'])
 def sendLogsCommand(msg):
    bot.reply_to(msg, ('os dados da msg são >>>>>>>> ' + json.dumps(msg.json, indent=4)))
@@ -283,9 +283,9 @@ def StandartMensage(msg):
    print('id de usuario >>>', msg.from_user.id)
    print('nome de usuario >>>>', msg.from_user.first_name)
 
-print('LIGADO!!!!!!')
 
 def start_bot():
+   print('LIGADO!!!!!!')
    bot.infinity_polling()
 
 if __name__ == "__main__":
