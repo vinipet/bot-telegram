@@ -62,17 +62,20 @@ def SearchUserInfoWhoIsNone(user = object, SearchingInfo: Optional[list] = None)
    Returns:
       list: Uma lista contendo os nomes das informações que estão como 'None'.
    """
-   if SearchingInfo is None:
-      SearchingInfo = ['email', 'firstName', 'lastName', 'identification']
-   datas = []
-   for info in SearchingInfo:
-      if isinstance(user, dict):
-         value = user.get(info, None)  
-      else:  
-         value = getattr(user, info, None) 
-      if value is None:
-         datas.append(info)
-   return datas
+   if isinstance(user, dict) or hasattr(user, "__dict__"):
+      if SearchingInfo is None:
+         SearchingInfo = ['email', 'firstName', 'lastName', 'identification']
+      datas = []
+      for info in SearchingInfo:
+         if isinstance(user, dict):
+            value = user.get(info, None)
+         else:
+            value = getattr(user, info, None)
+         if value is None:
+            datas.append(info)
+      return datas
+   else:
+      raise TypeError("O parâmetro 'user' deve ser um dicionário ou um objeto válido.")
 
 def add_command(commandName, commandDescription):
    currentCommands = bot.get_my_commands()

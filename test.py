@@ -3,7 +3,7 @@ import bot
 from bot import start_bot
 from unittest.mock import *
 from bot import  startCommand
-
+import classes
 
 class TestBot(unittest.TestCase):
    def test_bot_initialization(self):
@@ -32,6 +32,108 @@ class testsearchDataBank(unittest.TestCase):
    def teste_searchDataBankIfUserInUserData(self):
       result = bot.searchDataBank("3")  # ID não está em nenhum dicionário
       self.assertEqual(result, {"name": "Charlie"})
+
+class testSearchUserInfoWhoIsNone(unittest.TestCase):
+    def test_user_as_dict_all_values_present(self):
+        user = {
+            "email": "user@example.com",
+            "firstName": "John",
+            "lastName": "Doe",
+            "identification": "123456789"
+        }
+        result = bot.SearchUserInfoWhoIsNone(user)
+        self.assertEqual(result, [])  # nothing are missing
+
+    def test_user_as_dict_some_values_missing(self):
+        user = {
+            "email": "user@example.com",
+            "firstName": "John"
+        }
+        result = bot.SearchUserInfoWhoIsNone(user)
+        self.assertEqual(result, ["lastName", "identification"])  # value missing
+
+    def test_user_as_dict_all_values_missing(self):
+        user = {}
+        result = bot.SearchUserInfoWhoIsNone(user)
+        self.assertEqual(result, ['email', 'firstName', 'lastName', 'identification'])  # value missing
+
+    def test_user_as_object_all_values_present(self):
+      class User:
+         email = "user@example.com"
+         firstName = "John"
+         lastName = "Doe"
+         identification = "123456789"
+
+      user = User()
+      result = bot.SearchUserInfoWhoIsNone(user)
+      self.assertEqual(result, [])  # nothing are missing
+
+    def test_user_as_object_some_values_missing(self):
+      class User:
+         email = "user@example.com"
+         lastName = "Doe"
+
+      user = User()
+      result = bot.SearchUserInfoWhoIsNone(user)
+      self.assertEqual(result, ["firstName", "identification"])  # missing value
+
+    def test_user_as_object_all_values_missing(self):
+      class User:
+         email = None
+         firstName = None
+         lastName = None
+         identification = None
+
+      user = User()
+      result = bot.SearchUserInfoWhoIsNone(user)
+      self.assertEqual(result, ['email', 'firstName', 'lastName', 'identification'])  # missing value
+
+    def test_user_with_empty_searching_info(self):
+      user = {
+         "email": "user@example.com",
+         "firstName": "John"
+      }
+      result = bot.SearchUserInfoWhoIsNone(user, [])
+      self.assertEqual(result, [])  # nothing information to verify
+
+    def test_user_as_dict_no_matching_values(self):
+        user = {}
+        result = bot.SearchUserInfoWhoIsNone(user)
+        self.assertEqual(result, ["email", "firstName", "lastName", "identification"])  # all are missing
+
+    def test_user_as_obj_with_not_atribute(self):
+      class user():
+         id = self
+      user = user()
+      result = bot.SearchUserInfoWhoIsNone(user)
+      self.assertEqual(result, ["email", "firstName", "lastName", "identification"])  # all are missing
+
+    def test_user_as_obj_search_random_value(self):
+      class User:
+         def __init__(self):
+            self.email = None
+            self.firstName = None
+            self.lastName = None
+            self.identification = None
+      user = User()
+      result = bot.SearchUserInfoWhoIsNone(user, ['cu', 'bct', 'penisGordo'])
+      self.assertEqual(result, ['cu', 'bct', 'penisGordo'])  # all are missing
+
+    def test_user_is_none(self):
+        with self.assertRaises(TypeError):
+            bot.SearchUserInfoWhoIsNone(None)
+
+    def test_user_is_string(self):
+        with self.assertRaises(TypeError):
+            bot.SearchUserInfoWhoIsNone("invalid_string")
+
+    def test_user_is_list(self):
+        with self.assertRaises(TypeError):
+           bot.SearchUserInfoWhoIsNone(["invalid", "list"])
+
+    def test_user_is_number(self):
+        with self.assertRaises(TypeError):
+           bot.SearchUserInfoWhoIsNone(123)
 
 
 if __name__ == "__main__":
