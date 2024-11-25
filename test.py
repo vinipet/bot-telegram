@@ -135,6 +135,27 @@ class testSearchUserInfoWhoIsNone(unittest.TestCase):
         with self.assertRaises(TypeError):
            bot.SearchUserInfoWhoIsNone(123)
 
+class TestNullifyBtn(unittest.TestCase):
+    def test_nullify_btn(self):
+        btns = [
+            [
+                bot.types.InlineKeyboardButton("Button 1", callback_data="data1"),
+                bot.types.InlineKeyboardButton("Button 2", callback_data="data2"),
+            ],
+            [
+                bot.types.InlineKeyboardButton("Button 3", callback_data="data3"),
+            ]
+        ]
+        result = bot.nullifyBtn(btns)
+        self.assertIsInstance(result, bot.types.InlineKeyboardMarkup)
+        rows = result.keyboard  
+        self.assertEqual(len(rows), len(btns)) 
+
+        for row_result, row_expected in zip(rows, btns):
+            self.assertEqual(len(row_result), len(row_expected))  
+            for btn_result, btn_expected in zip(row_result, row_expected):
+                self.assertEqual(btn_result.text, btn_expected.text) 
+                self.assertEqual(btn_result.callback_data, "None")  
 
 class testAddCommand(unittest.TestCase):
    class TestBotCommands(unittest.TestCase):
