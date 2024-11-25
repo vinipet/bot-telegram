@@ -136,6 +136,28 @@ class testSearchUserInfoWhoIsNone(unittest.TestCase):
            bot.SearchUserInfoWhoIsNone(123)
 
 
+class testAddCommand(unittest.TestCase):
+   class TestBotCommands(unittest.TestCase):
+    def setUp(self):
+        # Cria um bot simulado
+        self.bot = MagicMock(spec=TeleBot)
+
+    def test_add_command(self):
+        mock_commands = [types.BotCommand("start", "Iniciar o bot")]
+        self.bot.get_my_commands.return_value = mock_commands  # Simula get_my_commands
+        bot.add_command(self.bot, "help", "Mostrar ajuda")
+        args, _ = self.bot.set_my_commands.call_args
+        actual_commands = args[0]  # Argumento passado para set_my_commands
+        expected_commands = [
+            bot.types.BotCommand("start", "Iniciar o bot"),
+            bot.types.BotCommand("help", "Mostrar ajuda"),
+        ]
+        self.assertEqual(len(actual_commands), len(expected_commands))
+        for actual, expected in zip(actual_commands, expected_commands):
+            self.assertEqual(actual.command, expected.command)
+            self.assertEqual(actual.description, expected.description)
+
+
 if __name__ == "__main__":
    unittest.main()
 
