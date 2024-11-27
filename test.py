@@ -179,33 +179,8 @@ class testAddCommand(unittest.TestCase):
             self.assertEqual(actual.description, expected.description)
 
 
+class joinCommand(unittest.TestCase):
+    True
+
 if __name__ == "__main__":
    unittest.main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# class testeBotMethod(unittest.TestCase):
-#    def test_user_in_bancoDdados(self):
-#       result = start_bot.searchDataBank(1)
-#       self.assertEqual(result, bancoDdados[1]) 
-#    def test_user_in_userData(self):
-#       result = start_bot.searchDataBank(3)
-#       self.assertEqual(result, userData[3]) 
-
-#    def test_user_not_found(self):
-#       result = start_bot.searchDataBank(99)
-#       self.assertFalse(result) 
