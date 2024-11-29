@@ -91,12 +91,46 @@ def nullifyBtn(btns):
    return newBtns
 
 def tryRegisterUser(userId):
+   """
+    Tenta registrar um usuário no banco de dados.
+
+    Esta função verifica se um usuário é válido para ser registrado no banco de dados.
+    O usuário deve ser uma instância de classe (não um dicionário) e possuir uma
+    propriedade `steps` do tipo lista. Se a propriedade `steps` estiver vazia, ela será
+    removida, e o usuário será registrado no banco de dados. Caso contrário, o registro
+    não ocorre.
+
+    Parâmetros:
+        userId (int): O identificador único do usuário.
+
+    Exceções:
+        KeyError: Se o `userId` não for encontrado no `userData`.
+        TypeError: Se o usuário for um dicionário e não uma instância de classe.
+        TypeError: Se o usuário não possuir a propriedade `steps`.
+        TypeError: Se a propriedade `steps` não for uma lista.
+
+    Retorna:
+        bool: Retorna `True` se o usuário for registrado com sucesso no banco de dados.
+              Retorna `False` se o registro não ocorrer porque `steps` não está vazio.
+
+   
+    """
+   # Adicione um utilitário para converter dicionários em objetos automaticamente.
+   if userId not in userData:    
+        raise KeyError(f"Usuário {userId} não encontrado em userData")
+   user = userData[userId]
+   if isinstance(user, dict):   
+        raise TypeError("O usuário deve ser um objeto, não um dicionário. Transforme-o em uma classe.")
+   if not isinstance(user['steps'], list):   
+        raise TypeError("A propriedade 'steps' deve ser do tipo lista")
+   if not userData[userId].steps:
+      raise TypeError("o usuario deve ter a propriedade steps")
+
+
    if len(userData[userId].steps) == 0 :
       del userData[userId].steps
       bancoDdados[userId] = userData[userId]
       del userData[userId]
-      print('banco de dados ofc >>>>', bancoDdados)
-      print('banco de dados fal >>>>', userData)
       return True 
    else:
       return False   
