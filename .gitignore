@@ -5,3 +5,4 @@
 /__pycache__
 /.vscode
 .coverage
+/tests/__pycache__
