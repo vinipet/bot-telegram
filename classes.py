@@ -15,3 +15,12 @@ class Usertemp:
             "city": None,
             "federal_unit": None
       }
+class Usertest:
+    def __init__(self, userId = 1, infos = [], email = "tiamaria@gmail.com", firstName = "vini", lastName = "pet",identification = 12345678909):
+      self.id = userId,
+      self.steps = infos
+      self.email = email
+      self.firstName = firstName
+      self.lastName = lastName
+      self.identification = identification
+     
