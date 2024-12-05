@@ -6,3 +6,6 @@
 /.vscode
 .coverage
 /tests/__pycache__
+/tests/test_calback/__pycache__
+/tests/test_capture/__pycache__
+*.pyc
