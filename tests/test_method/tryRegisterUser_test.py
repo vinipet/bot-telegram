@@ -28,8 +28,8 @@ def mockBank():
         patch("bot.userData", {
       "3": {"name": "Charlie"}, 
       "4":classes.Usertest(),
-      "5":classes.Usertemp(123, infos= "1"),
-      "6":classes.Usertemp(9090,["quero boquete parafuso", "name", "email"])}):
+      "5":classes.User(123, infos= "1"),
+      "6":classes.User(9090,["quero boquete parafuso", "name", "email"])}):
       
         yield bot
  

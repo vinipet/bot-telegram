@@ -17,7 +17,7 @@ def mock_message():
 def test_join_command(mock_bot, mock_message):
     bot.joinCommand(mock_message)
 
-    expected_text = 'Pra entrar no nosso canal, primeiro deve ser pago uma pequena taxa, você esta bem com isso também?'
+    expected_text = 'Pra entrar no nosso canal, primeiro deve ser pago uma pequena taxa, você esta bem com isso?'
 
     expected_markup = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton("Sim", callback_data="startPayment")
