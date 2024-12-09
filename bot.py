@@ -52,36 +52,39 @@ def searchDataBank(userId):
 
 def SearchUserInfoWhoIsNone(user=object, SearchingInfo: Optional[list] = None):
     """
-    Busca informações que estão como 'None' em um usuário.
+     Busca informações que estão como 'None' em um usuário.
 
-   Args:
-      user: O objeto ou dicionário do usuário.
-      SearchingInfo: Uma lista opcional de informações a serem verificadas.
-                     Se não for fornecida, será usada a lista padrão.
+    Args:
+       user: O objeto ou dicionário do usuário.
+       SearchingInfo: Uma lista opcional de informações a serem verificadas.
+                      Se não for fornecida, será usada a lista padrão.
 
-   Returns:
-      list: Uma lista contendo os nomes das informações que estão como 'None'.
-   """
+    Returns:
+       list: Uma lista contendo os nomes das informações que estão como 'None'.
+    """
     if isinstance(user, dict) or hasattr(user, "__dict__"):
-      if SearchingInfo is None:
-         SearchingInfo = ['email', 'firstName', 'lastName', 'identification']
-      datas = []
-      for info in SearchingInfo:
-         if isinstance(user, dict):
-            value = user.get(info, None)
-         else:
-            value = getattr(user, info, None)
-         if value is None:
-            datas.append(info)
-      return datas
-   else:
-      raise TypeError("O parâmetro 'user' deve ser um dicionário ou um objeto válido.")
+        if SearchingInfo is None:
+            SearchingInfo = ["email", "firstName", "lastName", "identification"]
+        datas = []
+        for info in SearchingInfo:
+            if isinstance(user, dict):
+                value = user.get(info, None)
+            else:
+                value = getattr(user, info, None)
+            if value is None:
+                datas.append(info)
+        return datas
+    else:
+        raise TypeError(
+            "O parâmetro 'user' deve ser um dicionário ou um objeto válido."
+        )
+
 
 def add_command(commandName, commandDescription):
-   currentCommands = bot.get_my_commands()
-   newCommand = types.BotCommand(commandName, commandDescription)
-   currentCommands.append(newCommand)
-   bot.set_my_commands(currentCommands)
+    currentCommands = bot.get_my_commands()
+    newCommand = types.BotCommand(commandName, commandDescription)
+    currentCommands.append(newCommand)
+    bot.set_my_commands(currentCommands)
 
 
 def nullifyBtn(btns):
@@ -95,7 +98,7 @@ def nullifyBtn(btns):
 
 
 def tryRegisterUser(userId):
-   """
+    """
     Tenta registrar um usuário no banco de dados.
 
     Esta função verifica se um usuário é válido para ser registrado no banco de dados.
@@ -117,30 +120,34 @@ def tryRegisterUser(userId):
         bool: Retorna `True` se o usuário for registrado com sucesso no banco de dados.
               Retorna `False` se o registro não ocorrer porque `steps` não está vazio.
 
-   
+
     """
-   # Adicione um utilitário para converter dicionários em objetos automaticamente.
-   if userId not in userData:    
+    # Adicione um utilitário para converter dicionários em objetos automaticamente.
+    if userId not in userData:
         raise KeyError(f"Usuário {userId} não encontrado em userData")
-   user = userData[userId]
-   if isinstance(user, dict):   
-        raise TypeError("O usuário deve ser um objeto, não um dicionário. Transforme-o em uma classe.")
-   if not isinstance(user['steps'], list):   
+    user = userData[userId]
+    if isinstance(user, dict):
+        raise TypeError(
+            "O usuário deve ser um objeto, não um dicionário. Transforme-o em uma classe."
+        )
+    if not isinstance(user["steps"], list):
         raise TypeError("A propriedade 'steps' deve ser do tipo lista")
-   if not userData[userId].steps:
-      raise TypeError("o usuario deve ter a propriedade steps")
+    if not userData[userId].steps:
+        raise TypeError("o usuario deve ter a propriedade steps")
+
+    if len(userData[userId].steps) == 0:
+        del userData[userId].steps
+        bancoDdados[userId] = userData[userId]
+        del userData[userId]
+        return True
+    else:
+        return False
 
 
-   if len(userData[userId].steps) == 0 :
-      del userData[userId].steps
-      bancoDdados[userId] = userData[userId]
-      del userData[userId]
-      return True 
-   else:
-      return False   
+add_command("join", "🎁 iniciar o processo para entrar no canal privado")
 
-add_command('join', '🎁 iniciar o processo para entrar no canal privado')
-@bot.message_handler(commands=['join'])
+
+@bot.message_handler(commands=["join"])
 def joinCommand(msg):
     keyboard = types.InlineKeyboardMarkup()
     btn1 = types.InlineKeyboardButton("Sim", callback_data="sim")
@@ -156,13 +163,22 @@ def joinCommand(msg):
 
 @bot.callback_query_handler(func=lambda call: call.data == "no")
 def callback_no_query(call):
-   chat_id = call.message.chat.id
-   message_id = call.message.message_id
-   message = call.message
-   bot.edit_message_text(message.text, chat_id, message_id, reply_markup=nullifyBtn(message.reply_markup.keyboard))
-   bot.send_message(chat_id, 'Que pena que você não quer continuar conosco :( \n se mudar de ideia estou aqui por você   ')
-   bot.answer_callback_query(call.id)
-   
+    chat_id = call.message.chat.id
+    message_id = call.message.message_id
+    message = call.message
+    bot.edit_message_text(
+        message.text,
+        chat_id,
+        message_id,
+        reply_markup=nullifyBtn(message.reply_markup.keyboard),
+    )
+    bot.send_message(
+        chat_id,
+        "Que pena que você não quer continuar conosco :( \n se mudar de ideia estou aqui por você   ",
+    )
+    bot.answer_callback_query(call.id)
+
+
 @bot.callback_query_handler(func=lambda call: call.data == "sim")
 def callback_sim_query(call):
     chat_id = call.message.chat.id
@@ -346,13 +362,21 @@ def capturedocumentType(msg):
         )
 
 
-add_command('start', ' 🚀 iniciar o bot')
-@bot.message_handler(commands=['start'])
-def startCommand(msg):
-   bot.reply_to(msg, 'Olá! 👋 Bem-vindo! \n \n  Estou aqui para ajudar você a entrar no canal privado [sla que nome c vai dar pedro]. Aqui estão algumas coisas que você pode fazer comigo: \n \n 📄 /help - Veja uma lista completa dos meus comandos \n ℹ️ /info - Saiba mais sobre o que eu posso fazer \n 🆘 /support - Fale com o suporte para mais ajuda \n \n Se precisar de algo específico, é só digitar o comando ou enviar uma mensagem. Vamos começar! 🚀')
+add_command("start", " 🚀 iniciar o bot")
 
-add_command('help', ' 🔍 Exibir lista completa de Comandos')
-@bot.message_handler(commands=['help'])
+
+@bot.message_handler(commands=["start"])
+def startCommand(msg):
+    bot.reply_to(
+        msg,
+        "Olá! 👋 Bem-vindo! \n \n  Estou aqui para ajudar você a entrar no canal privado [sla que nome c vai dar pedro]. Aqui estão algumas coisas que você pode fazer comigo: \n \n 📄 /help - Veja uma lista completa dos meus comandos \n ℹ️ /info - Saiba mais sobre o que eu posso fazer \n 🆘 /support - Fale com o suporte para mais ajuda \n \n Se precisar de algo específico, é só digitar o comando ou enviar uma mensagem. Vamos começar! 🚀",
+    )
+
+
+add_command("help", " 🔍 Exibir lista completa de Comandos")
+
+
+@bot.message_handler(commands=["help"])
 def helpcommand(msg):
     bot.reply_to(msg, "Aqui está tudo o que você pode fazer comigo!")
     for command in bot.get_my_commands():
@@ -365,8 +389,10 @@ def helpcommand(msg):
     )
 
 
-add_command('info',' ℹ️  exibir algumas informações sobre mim')
-@bot.message_handler(commands=['info'])
+add_command("info", " ℹ️  exibir algumas informações sobre mim")
+
+
+@bot.message_handler(commands=["info"])
 def infosCommand(msg):
     bot.reply_to(msg, "ℹ️ Sobre o Adm (ele é top):")
     bot.send_message(
@@ -379,8 +405,10 @@ def infosCommand(msg):
     )
 
 
-add_command('support', '🆘 mostrar os contatos para melhor suporte')
-@bot.message_handler(commands=['support'])
+add_command("support", "🆘 mostrar os contatos para melhor suporte")
+
+
+@bot.message_handler(commands=["support"])
 def supportCommand(msg):
     bot.reply_to(
         msg,
@@ -392,8 +420,10 @@ def supportCommand(msg):
     )
 
 
-add_command('myinfo',' 📄 exibir as informações do usuario')
-@bot.message_handler(commands=['myinfo'])
+add_command("myinfo", " 📄 exibir as informações do usuario")
+
+
+@bot.message_handler(commands=["myinfo"])
 def infosCommand(msg):
     bot.reply_to(
         msg,
@@ -403,8 +433,10 @@ def infosCommand(msg):
     )
 
 
-add_command('logs', '\U0001FAB5 exibir alguns logs da programação')
-@bot.message_handler(commands=['logs'])
+add_command("logs", "\U0001FAB5 exibir alguns logs da programação")
+
+
+@bot.message_handler(commands=["logs"])
 def sendLogsCommand(msg):
     bot.reply_to(
         msg, ("os dados da msg são >>>>>>>> " + json.dumps(msg.json, indent=4))
@@ -437,8 +469,9 @@ def StandartMensage(msg):
 
 
 def start_bot():
-   print('LIGADO!!!!!!')
-   bot.infinity_polling()
+    print("LIGADO!!!!!!")
+    bot.infinity_polling()
+
 
 if __name__ == "__main__":
     start_bot()
