@@ -18,10 +18,12 @@ bot = telebot.TeleBot(API_key)
 
 bancoDdados = {}
 userData = {}
-bot.delete_my_commands()
+# bot.delete_my_commands()
 
 
-def makeQRimage(code):
+def makeQRimage(code : str ) :
+    if type(code) is not  str:
+        raise TypeError("o code deve ser uma string")
     qr = qrcode.QRCode(
         version=2,  # Tamanho do QR Code (1 = menor, 40 = maior)
         error_correction=qrcode.constants.ERROR_CORRECT_L,  # Tolerância a erros
@@ -80,7 +82,7 @@ def SearchUserInfoWhoIsNone(user=object, SearchingInfo: Optional[list] = None):
         )
 
 
-def add_command(commandName, commandDescription):
+def add_command(bot, commandName, commandDescription):
     currentCommands = bot.get_my_commands()
     newCommand = types.BotCommand(commandName, commandDescription)
     currentCommands.append(newCommand)
@@ -122,7 +124,6 @@ def tryRegisterUser(userId):
 
 
     """
-    # Adicione um utilitário para converter dicionários em objetos automaticamente.
     if userId not in userData:
         raise KeyError(f"Usuário {userId} não encontrado em userData")
     user = userData[userId]
@@ -130,10 +131,8 @@ def tryRegisterUser(userId):
         raise TypeError(
             "O usuário deve ser um objeto, não um dicionário. Transforme-o em uma classe."
         )
-    if not isinstance(user["steps"], list):
+    if not isinstance(user.steps, list):
         raise TypeError("A propriedade 'steps' deve ser do tipo lista")
-    if not userData[userId].steps:
-        raise TypeError("o usuario deve ter a propriedade steps")
 
     if len(userData[userId].steps) == 0:
         del userData[userId].steps
@@ -144,21 +143,21 @@ def tryRegisterUser(userId):
         return False
 
 
-add_command("join", "🎁 iniciar o processo para entrar no canal privado")
+# add_command("join", "🎁 iniciar o processo para entrar no canal privado")
 
 
 @bot.message_handler(commands=["join"])
 def joinCommand(msg):
     keyboard = types.InlineKeyboardMarkup()
-    btn1 = types.InlineKeyboardButton("Sim", callback_data="sim")
+    btn1 = types.InlineKeyboardButton("Sim", callback_data="startPayment")
     btn2 = types.InlineKeyboardButton("Não", callback_data="no")
     keyboard.add(btn1, btn2)
 
     bot.reply_to(
         msg,
-        "Entendido!!! então você quer começar a acompanhar o nosso super canal. Mas antes eu preciso de algumas informções suas ",
+        "Pra entrar no nosso canal, primeiro deve ser pago uma pequena taxa, você esta bem com isso?",
+        reply_markup = keyboard
     )
-    bot.send_message(msg.chat.id, "você esta bem com isso?", reply_markup=keyboard)
 
 
 @bot.callback_query_handler(func=lambda call: call.data == "no")
@@ -174,7 +173,7 @@ def callback_no_query(call):
     )
     bot.send_message(
         chat_id,
-        "Que pena que você não quer continuar conosco :( \n se mudar de ideia estou aqui por você   ",
+        "Que pena que você não quer continuar conosco :( \n se mudar de ideia estou aqui por você.",
     )
     bot.answer_callback_query(call.id)
 
@@ -253,7 +252,7 @@ def callback_pix_query(call):
             bot.send_message(chat_id, result["link"])
 
     else:
-        userData[chat_id] = classes.Usertemp(chat_id, infos)
+        userData[chat_id] = classes.User(chat_id, infos)
         bot.send_message(
             chat_id,
             "Vejo que você ainda não possui um cadastro conosco. Vamos primeiro fazer o seu cadastro depos você volta aqui pra realizar o seu pagamento",
@@ -369,11 +368,11 @@ add_command("start", " 🚀 iniciar o bot")
 def startCommand(msg):
     bot.reply_to(
         msg,
-        "Olá! 👋 Bem-vindo! \n \n  Estou aqui para ajudar você a entrar no canal privado [sla que nome c vai dar pedro]. Aqui estão algumas coisas que você pode fazer comigo: \n \n 📄 /help - Veja uma lista completa dos meus comandos \n ℹ️ /info - Saiba mais sobre o que eu posso fazer \n 🆘 /support - Fale com o suporte para mais ajuda \n \n Se precisar de algo específico, é só digitar o comando ou enviar uma mensagem. Vamos começar! 🚀",
+        "Olá! 👋 Bem-vindo! \n \n  Estou aqui para ajudar você a entrar no canal privado [sla que nome c vai dar pedro]. Aqui estão algumas coisas que você pode fazer comigo: \n \n 📄 /help - Veja uma lista completa dos meus comandos \n ℹ️ /info - Saiba mais sobre o que eu posso fazer \n 🆘 /support - Fale com o suporte para mais ajuda \n \n Se precisar de algo específico, basta digitar o nome do comando ou clicar nele. Qualquer dúvida, estou aqui para ajudar! 😃 Vamos começar! 🚀",
     )
 
 
-add_command("help", " 🔍 Exibir lista completa de Comandos")
+# add_command("help", " 🔍 Exibir lista completa de Comandos")
 
 
 @bot.message_handler(commands=["help"])
@@ -381,11 +380,11 @@ def helpcommand(msg):
     bot.reply_to(msg, "Aqui está tudo o que você pode fazer comigo!")
     for command in bot.get_my_commands():
         bot.send_message(
-            msg.chat.id, "/{} -   {} ".format(command.command, command.description)
+            msg.chat.id, "/{} -   {}".format(command.command, command.description)
         )
     bot.send_message(
         msg.chat.id,
-        "Para executar qualquer um, basta digitar o nome do comando ou clicar nele. Qualquer dúvida, estou aqui para ajudar! 😃",
+        "Para executar qualquer comando, basta digitar o nome do comando ou clicar nele. Qualquer dúvida, estou aqui para ajudar! 😃",
     )
 
 
