@@ -9,3 +9,7 @@
 /tests/test_calback/__pycache__
 /tests/test_capture/__pycache__
 *.pyc
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/dictionaries/
+.idea/runConfigurations/
