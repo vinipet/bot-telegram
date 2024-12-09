@@ -62,7 +62,7 @@ def SearchUserInfoWhoIsNone(user=object, SearchingInfo: Optional[list] = None):
    Returns:
       list: Uma lista contendo os nomes das informações que estão como 'None'.
    """
-   if isinstance(user, dict) or hasattr(user, "__dict__"):
+    if isinstance(user, dict) or hasattr(user, "__dict__"):
       if SearchingInfo is None:
          SearchingInfo = ['email', 'firstName', 'lastName', 'identification']
       datas = []
