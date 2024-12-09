@@ -1,3 +1,7 @@
 *.env
 .idea/
 .venv/
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/dictionaries/
+.idea/runConfigurations/
