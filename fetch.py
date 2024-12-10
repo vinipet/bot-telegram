@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 import os
 import random
 import json
+import bot
+import classes
 
 
 load_dotenv()
@@ -18,9 +20,8 @@ def generate_unique_key():
             return key
 
 
-
-def fetch(user):
-    url = 'https://api.mercadopago.com/v1/payments'
+def fetch(user: classes.User):
+    url = "https://api.mercadopago.com/v1/payments"
     request_options = mercadopago.config.RequestOptions()
     request_options.custom_headers = {
         'x-idempotency-key': str(user.id)
@@ -72,4 +73,23 @@ def fetch(user):
         }
         return response
 
-    
+def tryPayment(user: classes.User, userInfos : list) -> dict:
+    if user and not bot.SearchUserInfoWhoIsNone(user, userInfos):
+        result = fetch(user)
+        return result
+    #     result = fetch.fetch(isInBank)
+    #     if result["status"] == "denied":
+    #         bot.send_message(chat_id, "Algo deu errado")
+    #         bot.send_message(chat_id, result["msg"])
+    #     if result["status"] == "aproved":
+    #         bot.send_message(chat_id, "Vejo que você já tem cadastro conosco.")
+    #         qr = makeQRimage(result["QRCode"])
+    #         bot.send_photo(chat_id, qr)
+    #         bot.send_message(chat_id, result["link"])
+
+    else:
+        return {
+        "status": 0,
+        "response": {"msg": "o usuario não possui um cadastro completo, ou valido"},
+    }
+

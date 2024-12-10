@@ -27,7 +27,7 @@ def test_try_payment_valid_user(mock_fetch):
     mock_fetch.assert_called_once_with(user)
 
 def test_try_payment_invalid_user(mock_fetch):
-    user = None  # Usuário inválido
+    user = None  
     userInfos = ["id", "name"]
     result = fetch.tryPayment(user, userInfos)
     assert result == {
@@ -40,7 +40,7 @@ def test_try_payment_invalid_user(mock_fetch):
 
 def test_try_payment_no_complete_user(mock_fetch):
     userInfos = ["id", "firstName"]
-    user = classes.Usertest(3434,userInfos,firstName=None)  # Usuário inválido
+    user = classes.Usertest(3434, userInfos, firstName=None)  
     result = fetch.tryPayment(user, userInfos)
     assert result == {
         "status": 0,
