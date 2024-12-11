@@ -1,7 +1,9 @@
 import pytest
 import classes
 import fetch
+import bot
 from unittest.mock import patch
+
 
 @pytest.fixture
 def mock_fetch():
@@ -15,7 +17,7 @@ def test_try_payment_valid_user(mock_fetch):
             "msg": "Pagamento realizado com sucesso!"
         }
     }
-    user = classes.Usertest
+    user = classes.Usertest()
     userInfos = []
     result = fetch.tryPayment(user, userInfos)
     assert result == {
@@ -29,6 +31,25 @@ def test_try_payment_valid_user(mock_fetch):
 def test_try_payment_invalid_user(mock_fetch):
     user = None  
     userInfos = ["id", "name"]
+    result = fetch.tryPayment(user, userInfos)
+    assert result == {
+        "status": 0,
+        "response": {
+            "msg": "o usuario não possui um cadastro completo, ou valido"
+        }
+    }
+    mock_fetch.assert_not_called()
+
+def test_try_payment_none_user(mock_fetch):
+    mock_fetch.return_value = {
+        "status": 1,
+        "response": {
+            "msg": "Pagamento realizado com sucesso!"
+        }
+    }
+
+    user = None
+    userInfos = []
     result = fetch.tryPayment(user, userInfos)
     assert result == {
         "status": 0,
