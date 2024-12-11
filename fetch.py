@@ -19,6 +19,17 @@ def generate_unique_key():
             generated_keys.add(key)
             return key
 
+def tryPayment(user: classes.User, userInfos: dict):
+    if user and not bot.SearchUserInfoWhoIsNone(user, userInfos):
+      result = fetch(user)
+      return result
+    else:
+        return {
+            "status": 0,
+            "response":{
+                "msg" : "o usuario não possui um cadastro completo, ou valido"
+            }     
+        }
 
 def fetch(user: classes.User):
     url = "https://api.mercadopago.com/v1/payments"
@@ -28,9 +39,8 @@ def fetch(user: classes.User):
     }
 
     payment_data = {
-        "transaction_amount": 100,
+        "transaction_amount": 1,
         "description": "LOTOTIP private room",
-        # "date_of_expiration" : '',
         "payment_method_id": "pix",
         "payer": {
             "email": user.email,
@@ -53,13 +63,11 @@ def fetch(user: classes.User):
 
 
     payment = sdk.payment().create(payment_data, request_options)
-
-    if payment["status"] == 200:
+    if int(payment["status"]) // 100 == 2:
         payment_response = payment["response"]  # Dados do pagamento criado
         print("Pagamento criado com sucesso!", json.dumps(payment_response, indent=4),  '\n \n \n')
         response = { 
             'QRCode' : payment_response['point_of_interaction']['transaction_data']['qr_code'] ,
-            'QRCode64' : payment_response['point_of_interaction']['transaction_data']['qr_code_base64'] ,
             'link' :  payment_response['point_of_interaction']['transaction_data']['ticket_url'],
             'status' : 'aproved'
         }
@@ -69,7 +77,7 @@ def fetch(user: classes.User):
         print(f"Erro ao criar pagamento: {payment['status']} -> {payment['response']}")
         response = {
             'status' : 'denied',
-            'msg' : payment['response'].message  # Define um valor padrão para response em caso de erro
+            'msg' : payment['response']["message"] 
         }
         return response
 
@@ -77,16 +85,6 @@ def tryPayment(user: classes.User, userInfos : list) -> dict:
     if user and not bot.SearchUserInfoWhoIsNone(user, userInfos):
         result = fetch(user)
         return result
-    #     result = fetch.fetch(isInBank)
-    #     if result["status"] == "denied":
-    #         bot.send_message(chat_id, "Algo deu errado")
-    #         bot.send_message(chat_id, result["msg"])
-    #     if result["status"] == "aproved":
-    #         bot.send_message(chat_id, "Vejo que você já tem cadastro conosco.")
-    #         qr = makeQRimage(result["QRCode"])
-    #         bot.send_photo(chat_id, qr)
-    #         bot.send_message(chat_id, result["link"])
-
     else:
         return {
         "status": 0,
