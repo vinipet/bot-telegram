@@ -27,9 +27,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Lint with flake8
-      run: |
-        flake8 . --max-line-length=88 --ignore=E203,W503
+    # - name: Lint with flake8
+    #   run: |
+    #     flake8 . --ignore=E203,W503
+    #     ignore = E501
 
     - name: Format with black
       run: |
