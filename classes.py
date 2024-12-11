@@ -1,4 +1,4 @@
-class Usertemp:
+class User:
     def __init__(self, userId, infos):
       self.id = userId,
       self.steps = infos
