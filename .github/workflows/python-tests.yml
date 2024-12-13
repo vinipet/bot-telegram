@@ -13,6 +13,10 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10"]
+    env:
+      ACCESSTOKEN: ${{ secrets.ACCESSTOKEN }}
+      API_KEY: ${{ secrets.API_KEY }}
+      
     steps:
     - name: Check out repository
       uses: actions/checkout@v3
@@ -35,13 +39,7 @@ jobs:
     - name: Format with black
       run: |
         black --check .
-    - name: Set environment variables
-      env:
-        ACCESSTOKEN: ${{ secrets.ACCESSTOKEN }}
-        API_KEY: ${{ secrets.API_KEY }}
-      run: |
-        echo "Environment variables set"           
-
+            
     - name: Run tests
       run: |
         pytest --maxfail=5 --disable-warnings
