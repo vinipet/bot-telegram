@@ -387,7 +387,7 @@ def helpcommand(msg):
     )
 
 
-add_command(bot,"info", " ℹ️  exibir algumas informações sobre mim")
+add_command(bot, "info", " ℹ️  exibir algumas informações sobre mim")
 
 
 @bot.message_handler(commands=["info"])
@@ -418,7 +418,7 @@ def supportCommand(msg):
     )
 
 
-add_command(bot,"myinfo", " 📄 exibir as informações do usuario")
+add_command(bot, "myinfo", " 📄 exibir as informações do usuario")
 
 
 @bot.message_handler(commands=["myinfo"])
