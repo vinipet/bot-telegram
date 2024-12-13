@@ -2,3 +2,7 @@ pytest
 flake8
 black
 pip-audit
+qrcode[pil]
+pyTelegramBotAPI
+mercadopago
+pytest-cov
