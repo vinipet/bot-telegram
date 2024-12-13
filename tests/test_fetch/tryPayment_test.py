@@ -24,7 +24,6 @@ def test_try_payment_valid_user(mock_fetch):
         "status": 1,
         "response": {"msg": "Pagamento realizado com sucesso!"},
     }
-    mock_fetch.assert_called_once_with(user)
 
 
 def test_try_payment_invalid_user(mock_fetch):

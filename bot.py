@@ -174,7 +174,7 @@ def tryRegisterUser(userId):
         return False
 
 
-add_command("join", "🎁 iniciar o processo para entrar no canal privado")
+add_command(bot, "join", "🎁 iniciar o processo para entrar no canal privado")
 
 
 @bot.message_handler(commands=["join"])
@@ -360,7 +360,7 @@ def capturedocumentType(msg):
         )
 
 
-add_command("start", " 🚀 iniciar o bot")
+add_command(bot, "start", " 🚀 iniciar o bot")
 
 
 @bot.message_handler(commands=["start"])
@@ -371,7 +371,7 @@ def startCommand(msg):
     )
 
 
-add_command("help", " 🔍 Exibir lista completa de Comandos")
+add_command(bot, "help", " 🔍 Exibir lista completa de Comandos")
 
 
 @bot.message_handler(commands=["help"])
@@ -387,7 +387,7 @@ def helpcommand(msg):
     )
 
 
-add_command("info", " ℹ️  exibir algumas informações sobre mim")
+add_command(bot,"info", " ℹ️  exibir algumas informações sobre mim")
 
 
 @bot.message_handler(commands=["info"])
@@ -403,7 +403,7 @@ def infosCommand(msg):
     )
 
 
-add_command("support", "🆘 mostrar os contatos para melhor suporte")
+add_command(bot, "support", "🆘 mostrar os contatos para melhor suporte")
 
 
 @bot.message_handler(commands=["support"])
@@ -418,7 +418,7 @@ def supportCommand(msg):
     )
 
 
-add_command("myinfo", " 📄 exibir as informações do usuario")
+add_command(bot,"myinfo", " 📄 exibir as informações do usuario")
 
 
 @bot.message_handler(commands=["myinfo"])
@@ -431,7 +431,7 @@ def myinfosCommand(msg):
     )
 
 
-add_command("logs", "\U0001FAB5 exibir alguns logs da programação")
+add_command(bot, "logs", "\U0001FAB5 exibir alguns logs da programação")
 
 
 @bot.message_handler(commands=["logs"])
