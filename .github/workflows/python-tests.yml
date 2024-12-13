@@ -35,6 +35,12 @@ jobs:
     - name: Format with black
       run: |
         black --check .
+    - name: Set environment variables
+      env:
+        ACCESSTOKEN: ${{ secrets.ACCESSTOKEN }}
+        API_KEY: ${{ secrets.API_KEY }}
+      run: |
+        echo "Environment variables set"           
 
     - name: Run tests
       run: |
