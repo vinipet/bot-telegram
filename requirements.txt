@@ -7,3 +7,4 @@ pyTelegramBotAPI
 mercadopago
 pytest-cov
 python-dotenv
+pyzbar

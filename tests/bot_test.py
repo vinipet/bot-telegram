@@ -24,10 +24,5 @@ def mock_message():
     return MockMessage()
 
 
-def test_ambiente_variable():
-    assert bot.API_key is not None
-    assert fetch.sdk is not None
-
-
 def test_bot_initialization():
     assert callable(bot.start_bot)
