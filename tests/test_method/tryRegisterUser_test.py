@@ -1,7 +1,9 @@
+from unittest.mock import *
+
 import pytest
+
 import bot
 import classes
-from unittest.mock import *
 
 
 def compare_objects(obj1, obj2):
@@ -33,7 +35,6 @@ def mockBank():
             "6": classes.User(9090, ["quero boquete parafuso", "name", "email"]),
         },
     ):
-
         yield bot
 
 

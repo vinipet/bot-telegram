@@ -1,8 +1,10 @@
-import pytest
-import bot
 import io
 from unittest.mock import *
+
+import pytest
 from PIL import Image
+
+import bot
 
 
 @pytest.mark.parametrize(

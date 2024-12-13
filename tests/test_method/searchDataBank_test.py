@@ -1,7 +1,10 @@
+from unittest.mock import *
+
 import pytest
+
 import bot
 import classes
-from unittest.mock import *
+
 
 
 @pytest.fixture
