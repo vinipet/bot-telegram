@@ -13,10 +13,7 @@ import classes
 import fetch
 
 load_dotenv()
-API_key = os.getenv("API_KEY")
-print(load_dotenv())
-print(API_key)
-bot = telebot.TeleBot(API_key)
+bot = telebot.TeleBot(os.getenv("API_KEY"))
 
 bancoDdados: dict = {}
 userData = {}
