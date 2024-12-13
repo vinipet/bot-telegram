@@ -21,6 +21,7 @@ def mockBank():
     ):
         yield bot
 
+
 @pytest.fixture
 def mock_bot(mocker):
     mock_send_message = mocker.patch("bot.bot.send_message")
@@ -33,10 +34,11 @@ def mock_message():
     mock_message.chat.id = 12345
     return mock_message
 
-def test_try_to_register_user (mockBank,mock_message):
-   chatId = mock_message.chat.id
-   infos = ["email", "firstName", "lastName", "identification"]
-   bot.startCatchUserData(chatId, infos)
 
-   assert bot.userData[chatId]
-   assert bot.userData[chatId].steps == infos
+def test_try_to_register_user(mockBank, mock_message):
+    chatId = mock_message.chat.id
+    infos = ["email", "firstName", "lastName", "identification"]
+    bot.startCatchUserData(chatId, infos)
+
+    assert bot.userData[chatId]
+    assert bot.userData[chatId].steps == infos

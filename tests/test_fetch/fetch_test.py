@@ -3,7 +3,9 @@ from unittest.mock import MagicMock, patch
 from mercadopago.config import RequestOptions
 from fetch import fetch
 from classes import Usertest
-@patch("mercadopago.SDK") 
+
+
+@patch("mercadopago.SDK")
 def test_fetch_payment_approved(mock_sdk):
     mock_payment = MagicMock()
     mock_payment.create.return_value = {
@@ -12,10 +14,10 @@ def test_fetch_payment_approved(mock_sdk):
             "point_of_interaction": {
                 "transaction_data": {
                     "qr_code": "mock_qr_code",
-                    "ticket_url": "mock_ticket_url"
+                    "ticket_url": "mock_ticket_url",
                 }
             }
-        }
+        },
     }
     mock_sdk.return_value.payment.return_value = mock_payment
 
@@ -25,7 +27,7 @@ def test_fetch_payment_approved(mock_sdk):
     assert result == {
         "QRCode": "mock_qr_code",
         "link": "mock_ticket_url",
-        "status": "aproved"
+        "status": "aproved",
     }
 
     mock_payment.create.assert_called_once()
@@ -37,12 +39,12 @@ def test_fetch_payment_approved(mock_sdk):
     assert request_options.custom_headers["x-idempotency-key"] == str(user.id)
 
 
-@patch("mercadopago.SDK")  
+@patch("mercadopago.SDK")
 def test_fetch_payment_denied(mock_sdk):
     mock_payment = MagicMock()
     mock_payment.create.return_value = {
         "status": "400",
-        "response": {"message": "Invalid request"}
+        "response": {"message": "Invalid request"},
     }
     mock_sdk.return_value.payment.return_value = mock_payment
 
@@ -53,22 +55,18 @@ def test_fetch_payment_denied(mock_sdk):
     print("Mock SDK payment.create call:", mock_payment.create.call_args)
     print("Resultado da função fetch:", result)
     mock_payment.create.assert_called_once()
-    assert result == {
-        "status": "denied",
-        "msg": "Invalid request"
-    }
+    assert result == {"status": "denied", "msg": "Invalid request"}
+
 
 @patch("mercadopago.SDK")
 def test_fetch_payment_with_invalid_paymentMode(mock_sdk):
     user = Usertest()
-    result = fetch(mock_sdk,user,"pinto grosso 8====D")
-    assert result == {
-        "status": "denied",
-        "msg": "An unexpected error occurred."
-    }
+    result = fetch(mock_sdk, user, "pinto grosso 8====D")
+    assert result == {"status": "denied", "msg": "An unexpected error occurred."}
     print(result)
     # with pytest.raises(ValueError):
     #     fetch(mock_sdk.return_value, user, "pinto grosso 8====D")
+
 
 @patch("mercadopago.SDK")
 def test_fetch_sdk_unexpected_error(mock_sdk):
@@ -80,11 +78,9 @@ def test_fetch_sdk_unexpected_error(mock_sdk):
 
     result = fetch(mock_sdk.return_value, user, "pix")
 
-    assert result == {
-        "status": "denied",
-        "msg": "An unexpected error occurred."
-    }
+    assert result == {"status": "denied", "msg": "An unexpected error occurred."}
     mock_payment.create.assert_called_once()
+
 
 @patch("mercadopago.SDK")
 def test_fetch_connection_error(mock_sdk):
@@ -94,27 +90,28 @@ def test_fetch_connection_error(mock_sdk):
 
     user = Usertest()
 
-    result = fetch(mock_sdk.return_value,user,"pix" )
+    result = fetch(mock_sdk.return_value, user, "pix")
 
     assert result == {
         "status": "denied",
-        "msg": "Network error occurred, please try again."
+        "msg": "Network error occurred, please try again.",
     }
+
 
 @patch("mercadopago.SDK")
 def test_fetch_key_error(mock_sdk):
     mock_payment = MagicMock()
     mock_payment.create.return_value = {
         "status": 201,  # Resposta válida
-        "response": {}  # Dados incompletos
+        "response": {},  # Dados incompletos
     }
     mock_sdk.return_value.payment.return_value = mock_payment
 
     user = Usertest()
 
-    result = fetch(mock_sdk.return_value,user,"pix" )
+    result = fetch(mock_sdk.return_value, user, "pix")
 
     assert result == {
         "status": "denied",
-        "msg": "Invalid response structure: 'point_of_interaction'"
+        "msg": "Invalid response structure: 'point_of_interaction'",
     }
