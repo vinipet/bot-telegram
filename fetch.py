@@ -10,7 +10,7 @@ import bot
 import classes
 
 load_dotenv()
-sdk = mercadopago.SDK(os.getenv("accessToken"))
+sdk = mercadopago.SDK(os.getenv("ACCESSTOKEN"))
 
 generated_keys = set()
 
