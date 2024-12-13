@@ -1,7 +1,10 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 from telebot import types
+
 import bot
+
 
 @pytest.fixture
 def mock_call():
@@ -13,6 +16,7 @@ def mock_call():
     call.message.reply_markup = types.InlineKeyboardMarkup()
     return call
 
+
 @pytest.fixture
 def mock_bot(mocker):
     mock_edit_message = mocker.patch("bot.bot.edit_message_text")
@@ -21,21 +25,23 @@ def mock_bot(mocker):
     return {
         "edit_message_text": mock_edit_message,
         "send_message": mock_send_message,
-        "answer_callback_query": mock_answer_callback
+        "answer_callback_query": mock_answer_callback,
     }
+
 
 @pytest.fixture
 def mock_nullify_btn(mocker):
     return mocker.patch("bot.nullifyBtn", return_value=types.InlineKeyboardMarkup())
+
 
 def test_callback_startPayment_query(mock_call, mock_bot, mock_nullify_btn):
     bot.callback_startPayment_query(mock_call)
 
     mock_bot["edit_message_text"].assert_called_once_with(
         "Mensagem original",  # Texto original
-        12345,                # ID do chat
-        67890,                # ID da mensagem
-        reply_markup=mock_nullify_btn.return_value  # Teclado nullificado
+        12345,  # ID do chat
+        67890,  # ID da mensagem
+        reply_markup=mock_nullify_btn.return_value,  # Teclado nullificado
     )
     mock_bot["send_message"].assert_called_once()
     _, kwargs = mock_bot["send_message"].call_args

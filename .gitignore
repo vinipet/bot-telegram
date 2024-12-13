@@ -10,3 +10,7 @@
 /tests/test_capture/__pycache__
 *.pyc
 /tests/test_fetch/__pycache__
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/dictionaries/
+.idea/runConfigurations/

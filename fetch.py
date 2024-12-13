@@ -1,21 +1,22 @@
-import mercadopago
-from dotenv import load_dotenv
+import json
 import os
 import random
 import json
 import mercadopago.sdk
 import bot
 import classes
-
+import mercadopago
+from dotenv import load_dotenv
 
 load_dotenv()
-sdk = mercadopago.SDK(os.getenv('accessToken'))
+sdk = mercadopago.SDK(os.getenv("accessToken"))
 
 generated_keys = set()
 
+
 def generate_unique_key():
     while True:
-        key = ''.join(random.choices('0123456789', k=3))
+        key = "".join(random.choices("0123456789", k=3))
         if key not in generated_keys:
             generated_keys.add(key)
             return key
@@ -93,6 +94,7 @@ def fetch(sdk: mercadopago.sdk, user: classes.User, paymentMetod):
         return {
             'status': 'denied',
             'msg': "Network error occurred, please try again."
+
         }
 
     except Exception as e:
@@ -101,4 +103,3 @@ def fetch(sdk: mercadopago.sdk, user: classes.User, paymentMetod):
             'status': 'denied',
             'msg': "An unexpected error occurred."
         }
-

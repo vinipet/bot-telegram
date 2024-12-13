@@ -1,7 +1,9 @@
+from unittest.mock import *
+
 import pytest
+
 import bot
 import classes
-from unittest.mock import *
 
 
 @patch("bot.bot.get_my_commands")
@@ -17,7 +19,7 @@ def test_add_command(mock_get_my_commands):
         bot.types.BotCommand("settings", "Configurar bot"),
     ]
 
-    bot.add_command(bot.bot,"settings", "Configurar bot")
+    bot.add_command(bot.bot, "settings", "Configurar bot")
 
     result_commands = bot.bot.get_my_commands()
 
