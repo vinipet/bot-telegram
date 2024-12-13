@@ -1,15 +1,16 @@
-import telebot
+import io
 import json
 import os
+from typing import Optional
+
+import qrcode
+import telebot
+from dotenv import load_dotenv
+from PIL import Image
+from telebot import TeleBot, types
+
 import classes
 import fetch
-import qrcode
-import io
-from telebot import TeleBot, types
-from dotenv import load_dotenv
-from typing import Optional
-from PIL import Image
-
 
 load_dotenv()
 API_key = os.getenv("API_KEY")
@@ -193,7 +194,6 @@ def joinCommand(msg):
 
 @bot.callback_query_handler(func=lambda call: call.data == "no")
 def callback_no_query(call):
-
     chat_id = call.message.chat.id
     message_id = call.message.message_id
     message = call.message

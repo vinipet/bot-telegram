@@ -1,8 +1,10 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 from mercadopago.config import RequestOptions
-from fetch import fetch
+
 from classes import Usertest
+from fetch import fetch
 
 
 @patch("mercadopago.SDK")

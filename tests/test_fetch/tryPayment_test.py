@@ -1,9 +1,10 @@
 from unittest.mock import patch
+
 import pytest
+
+import bot
 import classes
 import fetch
-import bot
-from unittest.mock import patch
 
 
 @pytest.fixture

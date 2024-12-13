@@ -1,12 +1,13 @@
 import json
 import os
 import random
-import json
+
+import mercadopago
 import mercadopago.sdk
+from dotenv import load_dotenv
+
 import bot
 import classes
-import mercadopago
-from dotenv import load_dotenv
 
 load_dotenv()
 sdk = mercadopago.SDK(os.getenv("accessToken"))
