@@ -8,3 +8,4 @@ mercadopago
 pytest-cov
 python-dotenv
 pyzbar
+pytest-mock
