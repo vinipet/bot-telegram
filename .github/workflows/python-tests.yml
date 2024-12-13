@@ -39,10 +39,15 @@ jobs:
     - name: Run tests
       run: |
         pytest --maxfail=5 --disable-warnings
-      
+
+    - name: Debug pytest
+      run: |
+          pytest --trace-config  
+
     - name: Security audit
       run: |
         pip-audit
+        
     - name: Run tests with coverage
       run: |
-        pytest --cov=seu_pacote tests/
+        pytest --cov=bot 
