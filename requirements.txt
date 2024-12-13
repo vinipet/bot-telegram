@@ -6,3 +6,4 @@ qrcode[pil]
 pyTelegramBotAPI
 mercadopago
 pytest-cov
+dotenv
