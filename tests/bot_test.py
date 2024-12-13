@@ -4,6 +4,7 @@ import pytest
 
 import bot
 import classes
+import fetch
 
 
 @pytest.fixture
@@ -21,6 +22,11 @@ def mock_message():
         text = "Olá, este é um teste!"
 
     return MockMessage()
+
+
+def test_ambiente_variable():
+    assert bot.API_key is not None
+    assert fetch.sdk is not None
 
 
 def test_bot_initialization():
