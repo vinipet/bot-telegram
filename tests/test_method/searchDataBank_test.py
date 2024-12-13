@@ -6,7 +6,6 @@ import bot
 import classes
 
 
-
 @pytest.fixture
 def mock_bank():
     with patch(

@@ -91,15 +91,8 @@ def fetch(sdk: mercadopago.sdk, user: classes.User, paymentMetod):
         return {"status": "denied", "msg": f"Invalid response structure: {e}"}
     except ConnectionError as e:
         print(f"Erro de conexão: {e}")
-        return {
-            'status': 'denied',
-            'msg': "Network error occurred, please try again."
-
-        }
+        return {"status": "denied", "msg": "Network error occurred, please try again."}
 
     except Exception as e:
         print(f"Erro inesperado: {e}")
-        return {
-            'status': 'denied',
-            'msg': "An unexpected error occurred."
-        }
+        return {"status": "denied", "msg": "An unexpected error occurred."}

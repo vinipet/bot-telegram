@@ -165,7 +165,7 @@ def tryRegisterUser(userId):
         )
     if not isinstance(user.steps, list):
         raise TypeError("A propriedade 'steps' deve ser do tipo lista")
-    if len(userData[userId].steps) == 0 :
+    if len(userData[userId].steps) == 0:
         del userData[userId].steps
         bancoDdados[userId] = userData[userId]
         del userData[userId]
@@ -174,8 +174,10 @@ def tryRegisterUser(userId):
         return False
 
 
-add_command('join', '🎁 iniciar o processo para entrar no canal privado')
-@bot.message_handler(commands=['join'])
+add_command("join", "🎁 iniciar o processo para entrar no canal privado")
+
+
+@bot.message_handler(commands=["join"])
 def joinCommand(msg):
     chat_id = msg.chat.id
     keyboard = types.InlineKeyboardMarkup()
@@ -188,16 +190,26 @@ def joinCommand(msg):
         reply_markup=keyboard,
     )
 
+
 @bot.callback_query_handler(func=lambda call: call.data == "no")
 def callback_no_query(call):
 
-   chat_id = call.message.chat.id
-   message_id = call.message.message_id
-   message = call.message
-   bot.edit_message_text(message.text, chat_id, message_id, reply_markup=nullifyBtn(message.reply_markup.keyboard))
-   bot.send_message(chat_id, 'Que pena que você não quer continuar conosco :( \n se mudar de ideia estou aqui por você.')
-   bot.answer_callback_query(call.id)
-   
+    chat_id = call.message.chat.id
+    message_id = call.message.message_id
+    message = call.message
+    bot.edit_message_text(
+        message.text,
+        chat_id,
+        message_id,
+        reply_markup=nullifyBtn(message.reply_markup.keyboard),
+    )
+    bot.send_message(
+        chat_id,
+        "Que pena que você não quer continuar conosco :( \n se mudar de ideia estou aqui por você.",
+    )
+    bot.answer_callback_query(call.id)
+
+
 @bot.callback_query_handler(func=lambda call: call.data == "startPayment")
 def callback_startPayment_query(call):
     chat_id = call.message.chat.id
@@ -349,6 +361,8 @@ def capturedocumentType(msg):
 
 
 add_command("start", " 🚀 iniciar o bot")
+
+
 @bot.message_handler(commands=["start"])
 def startCommand(msg):
     bot.reply_to(
@@ -357,8 +371,10 @@ def startCommand(msg):
     )
 
 
-add_command('help', ' 🔍 Exibir lista completa de Comandos')
-@bot.message_handler(commands=['help'])
+add_command("help", " 🔍 Exibir lista completa de Comandos")
+
+
+@bot.message_handler(commands=["help"])
 def helpcommand(msg):
     bot.reply_to(msg, "Aqui está tudo o que você pode fazer comigo!")
     for command in bot.get_my_commands():
@@ -372,6 +388,8 @@ def helpcommand(msg):
 
 
 add_command("info", " ℹ️  exibir algumas informações sobre mim")
+
+
 @bot.message_handler(commands=["info"])
 def infosCommand(msg):
     bot.reply_to(msg, "ℹ️ Sobre o Adm (ele é top):")
@@ -384,7 +402,10 @@ def infosCommand(msg):
         "Principais funções: \n \n # ADM - Eu administro o canal \n # Pagamentos - posso te ajudar a pagar (tem descontos as vezes) \n # [3 funções fica mais bonito falta 1] - [descrição da função] \n \n # Estou sempre por aqui! Se precisar de algo específico, use /help para ver todos os comandos. Vamos trabalhar juntos! 🤝",
     )
 
+
 add_command("support", "🆘 mostrar os contatos para melhor suporte")
+
+
 @bot.message_handler(commands=["support"])
 def supportCommand(msg):
     bot.reply_to(
@@ -396,7 +417,10 @@ def supportCommand(msg):
         "Email: suporte100%real@todosEles.com \n FAQ: Consulte nossas Perguntas Frequentes em (link para o site que vai ter) \n Chat: (Link para um canal de suporte, se houver, ou pro seu chat) \n Fique à vontade para nos contatar, e faremos o possível para ajudar! 😄",
     )
 
+
 add_command("myinfo", " 📄 exibir as informações do usuario")
+
+
 @bot.message_handler(commands=["myinfo"])
 def myinfosCommand(msg):
     bot.reply_to(
@@ -408,6 +432,8 @@ def myinfosCommand(msg):
 
 
 add_command("logs", "\U0001FAB5 exibir alguns logs da programação")
+
+
 @bot.message_handler(commands=["logs"])
 def sendLogsCommand(msg):
     bot.reply_to(
