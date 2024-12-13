@@ -47,7 +47,11 @@ jobs:
     - name: Debug pytest
       run: |
           pytest --trace-config  
-
+          
+    - name: Upgrade setuptools
+      run: | 
+          pip install --upgrade setuptools
+      
     - name: Security audit
       run: |
         pip-audit
