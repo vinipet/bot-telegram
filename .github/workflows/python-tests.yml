@@ -6,7 +6,6 @@ on:
   pull_request:
     branches: [main]
 
-    
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -27,11 +26,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    # - name: Lint with flake8
-    #   run: |
-    #     flake8 . --ignore=E203,W503
-    #     ignore = E501
-
     - name: Format with black
       run: |
         black --check .
@@ -40,14 +34,10 @@ jobs:
       run: |
         pytest --maxfail=5 --disable-warnings
 
-    - name: Debug pytest
-      run: |
-          pytest --trace-config  
-
     - name: Security audit
       run: |
         pip-audit
         
     - name: Run tests with coverage
       run: |
-        pytest --cov=bot 
+        pytest --cov=bot --cov-report=xml
