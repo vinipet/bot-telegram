@@ -4,6 +4,7 @@ import pytest
 
 import bot
 import classes
+import fetch
 
 
 @pytest.fixture
