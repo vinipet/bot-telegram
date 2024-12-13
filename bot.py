@@ -1,56 +1,86 @@
 import telebot 
-from telebot import TeleBot, types
 import json
-from dotenv import load_dotenv
 import os
 import classes
-from typing import Optional
 import fetch
 import qrcode
-from PIL import Image
 import io
+from telebot import TeleBot, types
+from dotenv import load_dotenv
+from typing import Optional
+from PIL import Image
 
 load_dotenv()
 API_key = os.getenv('API_KEY')
 bot = telebot.TeleBot(API_key)
 
-bancoDdados = {}
+bancoDdados : dict = {}
 userData = {}
-bot.delete_my_commands()
+# bot.delete_my_commands()
+
+def handle_incomplete_registration(chat_id, userinfos):
+    startCatchUserData(chat_id, userinfos)
+    bot.send_message(
+        chat_id,
+        "Vejo que você ainda não possui um cadastro conosco. Ou seu cadastro está incompleto. Vamos primeiro completar o seu cadastro, depois você volta aqui para realizar o pagamento.",
+    )
+    bot.send_message(
+        chat_id,
+        "Vamos começar com {}, por favor digite as informações para eu terminar o seu cadastro".format(
+            userData[chat_id].steps[0]
+        ),
+    )
+
+def handle_approved_payment(chat_id, result):
+    bot.send_message(chat_id, "Vejo que você já tem cadastro conosco.")
+    qr = makeQRimage(result["QRCode"])
+    bot.send_photo(chat_id, qr)
+    bot.send_message(chat_id, result["link"])
+
+def handle_denied_payment(chat_id, msg):
+    bot.send_message(chat_id, "Algo deu errado.")
+    bot.send_message(chat_id, msg)
 
 def makeQRimage(code):
+   if not isinstance(code, str):
+        raise TypeError("O código fornecido deve ser uma string.")
    qr = qrcode.QRCode(
-   version=2,  # Tamanho do QR Code (1 = menor, 40 = maior)
-   error_correction=qrcode.constants.ERROR_CORRECT_L,  # Tolerância a erros
-   box_size=10,  # Tamanho de cada "quadradinho"
-   border=4,  # Tamanho da borda
+   version=2,  
+   error_correction=qrcode.constants.ERROR_CORRECT_L,  
+   box_size=10,  
+   border=4,  
    )
    qr.add_data(code)
    qr.make(fit=True)
-
    qr_image = qr.make_image(fill_color="black", back_color="white")
    buffer = io.BytesIO()
    qr_image.save(buffer, format="PNG")
    qr_bytes = buffer.getvalue()
-   
    return qr_bytes
-   #  Salvando a imagem em um arquivo
-   # qr_image.save("qr_code.png")
 
-   # Exibindo a imagem (opcional, para visualização)
-   # qr_image.show()
+def searchDataBank(userId: classes.User) -> bool | classes.User:
+   """
+    Retorna o objeto do usuário baseado no userId.
 
-def searchDataBank(userId: int) -> bool | classes.User:
-    if userId in bancoDdados:
-        user_object = bancoDdados[userId]
-        return user_object
-    elif userId in userData:
-        user_object = userData[userId]
-        return user_object
-    else:
-        return False
+    Verifica se o userId está em bancoDdados ou userData e retorna o objeto correspondente.
+    Caso o userId não seja encontrado, retorna False.
 
-def SearchUserInfoWhoIsNone(user = object, SearchingInfo: Optional[list] = None):
+    Parâmetros:
+        userId: Identificador único do usuário.
+
+    Retorna:
+        Objeto do usuário se encontrado, ou False caso contrário.
+   """
+   if userId in bancoDdados:
+      user_object = bancoDdados[userId]  
+      return user_object
+   elif userId in userData:
+      user_object = userData[userId]  
+      return user_object
+   else:
+      return False
+
+def SearchUserInfoWhoIsNone(user = classes.User, SearchingInfo: Optional[list] = None):
    """
    Busca informações que estão como 'None' em um usuário.
 
@@ -72,7 +102,7 @@ def SearchUserInfoWhoIsNone(user = object, SearchingInfo: Optional[list] = None)
    else:
       raise TypeError("O parâmetro 'user' deve ser um dicionário ou um objeto válido.")
 
-def add_command(commandName, commandDescription):
+def add_command(bot, commandName, commandDescription):
    currentCommands = bot.get_my_commands()
    newCommand = types.BotCommand(commandName, commandDescription)
    currentCommands.append(newCommand)
@@ -84,6 +114,9 @@ def nullifyBtn(btns):
       newRow = [types.InlineKeyboardButton(btn.text, callback_data='None') for btn in row]
       newBtns.row(*newRow)
    return newBtns
+
+def startCatchUserData(userId: int, userInfos:list):
+   userData[userId] = classes.User(userId,userInfos)
 
 def tryRegisterUser(userId):
    
@@ -109,37 +142,33 @@ def tryRegisterUser(userId):
         bool: Retorna `True` se o usuário for registrado com sucesso no banco de dados.
               Retorna `False` se o registro não ocorrer porque `steps` não está vazio.
     """
-    if userId not in userData:    
+   if userId not in userData:    
         raise KeyError(f"Usuário {userId} não encontrado em userData")
-    user = userData[userId]
-    if isinstance(user, dict):   
+   user = userData[userId]
+   if isinstance(user, dict):   
         raise TypeError("O usuário deve ser um objeto, não um dicionário. Transforme-o em uma classe.")
-    if not isinstance(user['steps'], list):   
+   if not isinstance(user.steps, list):   
         raise TypeError("A propriedade 'steps' deve ser do tipo lista")
 
-    if len(userData[userId].steps) == 0:
+
+   if len(userData[userId].steps) == 0 :
         del userData[userId].steps
         bancoDdados[userId] = userData[userId]
         del userData[userId]
-        return True
-    else:
-        return False
-    
+        return True 
+   else:
+      return False   
 
-def startCatchUserData(userId: int, userInfos:list):
-    userData[userId] = classes.User(userId, userInfos)
-
-
-# add_command("join", "🎁 iniciar o processo para entrar no canal privado")
-@bot.message_handler(commands=["join"])
+# add_command('join', '🎁 iniciar o processo para entrar no canal privado')
+@bot.message_handler(commands=['join'])
 def joinCommand(msg):
+   chat_id = msg.chat.id
    keyboard = types.InlineKeyboardMarkup()
-   btn1 = types.InlineKeyboardButton("Sim", callback_data="sim")
+   btn1 = types.InlineKeyboardButton("Sim", callback_data="startPayment")
    btn2 = types.InlineKeyboardButton("Não", callback_data="no")
    keyboard.add(btn1,btn2)
+   bot.send_message(chat_id, 'Pra entrar no nosso canal, primeiro deve ser pago uma pequena taxa, você esta bem com isso?', reply_markup=keyboard)
 
-   bot.reply_to(msg, 'Entendido!!! então você quer começar a acompanhar o nosso super canal. Mas antes eu preciso de algumas informções suas ')
-   bot.send_message(msg.chat.id, 'você esta bem com isso?', reply_markup=keyboard)
 
 @bot.callback_query_handler(func=lambda call: call.data == "no")
 def callback_no_query(call):
@@ -147,22 +176,9 @@ def callback_no_query(call):
    message_id = call.message.message_id
    message = call.message
    bot.edit_message_text(message.text, chat_id, message_id, reply_markup=nullifyBtn(message.reply_markup.keyboard))
-   bot.send_message(chat_id, 'Que pena que você não quer continuar conosco :( \n se mudar de ideia estou aqui por você   ')
+   bot.send_message(chat_id, 'Que pena que você não quer continuar conosco :( \n se mudar de ideia estou aqui por você.')
    bot.answer_callback_query(call.id)
    
-@bot.callback_query_handler(func=lambda call: call.data == "sim")
-def callback_sim_query(call):
-   chat_id = call.message.chat.id
-   message_id = call.message.message_id
-   message = call.message
-   bot.edit_message_text(message.text, chat_id, message_id, reply_markup=nullifyBtn(message.reply_markup.keyboard))
-   keyboard = types.InlineKeyboardMarkup()
-   btn1 = types.InlineKeyboardButton("Sim", callback_data="startPayment")
-   btn2 = types.InlineKeyboardButton("Não", callback_data="no")
-   keyboard.add(btn1,btn2)
-   bot.send_message(chat_id, 'Pra entrar no nosso canal, primeiro deve ser pago uma pequena taxa, você esta bem com isso também?', reply_markup=keyboard)
-   bot.answer_callback_query(call.id)
-
 @bot.callback_query_handler(func=lambda call: call.data == "startPayment")
 def callback_startPayment_query(call):
    chat_id = call.message.chat.id
@@ -183,42 +199,30 @@ def callback_startPayment_query(call):
 
 @bot.callback_query_handler(func=lambda call: call.data =="pix")
 def callback_pix_query(call):
-    chat_id = call.message.chat.id
+    chat_id: int = call.message.chat.id
     message_id = call.message.message_id
     message = call.message
-    
-    keyboard = types.InlineKeyboardMarkup()
-    keyboard.add(types.InlineKeyboardButton("🔥 Pix 🔥", callback_data="none"))
-    bot.edit_message_text(message.text, chat_id, message_id, reply_markup=keyboard)
 
     keyboard = types.InlineKeyboardMarkup()
     keyboard.add(types.InlineKeyboardButton("🔥 Pix 🔥", callback_data="none"))
     bot.edit_message_text(message.text, chat_id, message_id, reply_markup=keyboard)
+    bot.send_message(chat_id, "Estamos verificando algumas informações...")
+    try:
+        userIsInDataBank = searchDataBank(chat_id)
+        userinfos = ["email", "firstName", "lastName", "identification"]
+        result = fetch.tryPayment(userIsInDataBank, userinfos)
+        if result["status"] == 0:
+            handle_incomplete_registration(chat_id, userinfos)
+        elif result["status"] == "aproved":
+            handle_approved_payment(chat_id, result)
+        elif result["status"] == "denied":
+            handle_denied_payment(chat_id, result["msg"])
+        else:
+            bot.send_message(chat_id, "Resposta inesperada do servidor.")
+    except Exception as e:
+        bot.send_message(chat_id, "Ocorreu um erro inesperado. Por favor, tente novamente.")
+        print(f"Erro em callback_pix_query: {e}")
 
-    bot.send_message(chat_id, "estamos verificando algumas informações")
-    userIsInDataBank = searchDataBank(chat_id)
-    infos = ["email", "firstName", "lastName", "identification"]
-    print(SearchUserInfoWhoIsNone(chat_id, infos))
-    result = fetch.tryPayment(userIsInDataBank, infos)
-    if result["status"] == 0:
-        startCatchUserData(chat_id , infos)
-        bot.send_message(
-            chat_id,
-            "Vejo que você ainda não possui um cadastro conosco. Vamos primeiro fazer o seu cadastro depois você volta aqui pra realizar o seu pagamento",
-        )
-        bot.send_message(
-            chat_id,
-            "Vamos começar com {}, por favor digite as informações pra eu terminar o seu cadastro".format(
-                userData[chat_id].steps[0]
-            ),
-        )
-
-
-    else:
-        userData[chat_id] = classes.Usertemp(chat_id, infos) 
-        bot.send_message(chat_id, 'Vejo que você ainda não possui um cadastro conosco. Vamos primeiro fazer o seu cadastro depos você volta aqui pra realizar o seu pagamento')
-        bot.send_message(chat_id, 'Vamos começar com {}, por favor digite as informações pra eu terminar o seu cadastro'.format(userData[chat_id].steps[0]) )
-      
 @bot.message_handler(func=lambda msg:  msg.chat.id in userData and userData[msg.chat.id].steps[0] == 'email')
 def captureEmail(msg):
    chat_id = msg.chat.id
@@ -277,15 +281,15 @@ def capturedocumentType(msg):
 # add_command("start", " 🚀 iniciar o bot")
 @bot.message_handler(commands=["start"])
 def startCommand(msg):
-   bot.reply_to(msg, 'Olá! 👋 Bem-vindo! \n \n  Estou aqui para ajudar você a entrar no canal privado [sla que nome c vai dar pedro]. Aqui estão algumas coisas que você pode fazer comigo: \n \n 📄 /help - Veja uma lista completa dos meus comandos \n ℹ️ /info - Saiba mais sobre o que eu posso fazer \n 🆘 /support - Fale com o suporte para mais ajuda \n \n Se precisar de algo específico, é só digitar o comando ou enviar uma mensagem. Vamos começar! 🚀')
+   bot.reply_to(msg, 'Olá! 👋 Bem-vindo! \n \n  Estou aqui para ajudar você a entrar no canal privado [sla que nome c vai dar pedro]. Aqui estão algumas coisas que você pode fazer comigo: \n \n 📄 /help - Veja uma lista completa dos meus comandos \n ℹ️ /info - Saiba mais sobre o que eu posso fazer \n 🆘 /support - Fale com o suporte para mais ajuda \n \n Se precisar de algo específico, basta digitar o nome do comando ou clicar nele. Qualquer dúvida, estou aqui para ajudar! 😃 Vamos começar! 🚀')
 
-add_command('help', ' 🔍 Exibir lista completa de Comandos')
+# add_command('help', ' 🔍 Exibir lista completa de Comandos')
 @bot.message_handler(commands=['help'])
 def helpcommand(msg):
    bot.reply_to(msg, 'Aqui está tudo o que você pode fazer comigo!')
    for command in bot.get_my_commands():
-      bot.send_message(msg.chat.id, '/{} -   {} '.format(command.command ,command.description))
-   bot.send_message(msg.chat.id, 'Para executar qualquer um, basta digitar o nome do comando ou clicar nele. Qualquer dúvida, estou aqui para ajudar! 😃') 
+      bot.send_message(msg.chat.id, '/{} -   {}'.format(command.command ,command.description))
+   bot.send_message(msg.chat.id, 'Para executar qualquer comando, basta digitar o nome do comando ou clicar nele. Qualquer dúvida, estou aqui para ajudar! 😃') 
 
 
 # add_command("info", " ℹ️  exibir algumas informações sobre mim")
